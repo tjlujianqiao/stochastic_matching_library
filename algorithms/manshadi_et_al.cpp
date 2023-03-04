@@ -1,4 +1,4 @@
-vector<int> graph::manshadi(map<pair<int, int>, double> &typeProb)
+vector<int> graph::manshadi_et_al(map<pair<int, int>, double> &typeProb)
 {
     vector<int> res(realSize, -1);
     vector<int> offLine(onSize + offSize, -1);
