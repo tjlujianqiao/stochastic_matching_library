@@ -15,7 +15,7 @@ double fillWater(vector<double> &level, const double water)
     return (l + r) / 2;
 }
 
-vector<int> graph::balance_SWR()
+vector<int> graph::balance_swr()
 {
     vector<double> currentLevel(onSize + offSize, 0);
     vector<bool> selected(onSize + offSize, false);
@@ -65,7 +65,7 @@ vector<int> graph::balance_SWR()
     return res;
 }
 
-vector<int> graph::balance_OCS()
+vector<int> graph::balance_ocs()
 {
     vector<double> currentLevel(onSize + offSize, 0);
     vector<bool> selected(onSize + offSize, false);

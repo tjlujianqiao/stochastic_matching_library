@@ -70,7 +70,7 @@ public:
     vector<int> sampling_without_replacement(map<pair<int, int>, double> &typeProb);
     map<pair<int, int>, double> optimal_matching_prob(int n_samples, int onSizeSample);
 
-    vector<int> poisson_OCS(const vector<double> &offMass, map<pair<int, int>, double> &typeProb);
+    vector<int> poisson_ocs(const vector<double> &offMass, map<pair<int, int>, double> &typeProb);
     vector<double> poisson_offline_mass(map<pair<int, int>, double> &typeProb);
 
     vector<int> top_half_sampling(map<pair<int, int>, double> &typeProb);
@@ -78,14 +78,14 @@ public:
     vector<vector<int>> jaillet_lu_list();
     vector<int> jaillet_lu(vector<vector<int>> &jlList);
 
-    vector<int> manshadi(map<pair<int, int>, double> &typeProb);
+    vector<int> manshadi_et_al(map<pair<int, int>, double> &typeProb);
 
     vector<int> min_degree();
 
     vector<int> ranking();
 
-    vector<int> balance_SWR();
-    vector<int> balance_OCS();
+    vector<int> balance_swr();
+    vector<int> balance_ocs();
     
 private:
     // Adjacency list representation

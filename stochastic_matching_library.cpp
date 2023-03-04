@@ -74,16 +74,17 @@ struct resAlg{
 }OPT("OPT"),
  SWR("SWR"),
  ranking("Ranking"),
- balanceSWR("BalanceSWR"),
- balanceOCS("BalanceOCS"),
- poissonOCS("PoissonOCS"),
- topHalf("TopHalfSampling"),
  minDegree("MinDegree"),
- jailletLu("JailletLu");
+ manshadiGS("ManshadiEtAl"),
+ jailletLu("JailletLu"),
+ topHalf("TopHalfSampling"),
+ poissonOCS("PoissonOCS"),
+ balanceSWR("BalanceSWR"),
+ balanceOCS("BalanceOCS");
 
 int main()
 {
-    resAlg* resPointer[] = {&OPT, &SWR, &ranking, &balanceSWR, &balanceOCS, &poissonOCS, &topHalf, &minDegree, &jailletLu};
+    resAlg* resPointer[] = {&OPT, &SWR, &ranking, &balanceSWR, &balanceOCS, &poissonOCS, &topHalf, &minDegree, &jailletLu, &manshadiGS};
     
     
     int numGraph = 10;
@@ -109,12 +110,14 @@ int main()
             OPT.add_run(match_size(g.maximum_matching()));
             SWR.add_run(match_size(g.sampling_without_replacement(typeProb)));
             ranking.add_run(match_size(g.ranking()));
-            balanceSWR.add_run(match_size(g.balance_SWR()));
-            balanceOCS.add_run(match_size(g.balance_OCS()));
-            poissonOCS.add_run(match_size(g.poisson_OCS(offMass, typeProb)));
+            balanceSWR.add_run(match_size(g.balance_swr()));
+            balanceOCS.add_run(match_size(g.balance_ocs()));
+            poissonOCS.add_run(match_size(g.poisson_ocs(offMass, typeProb)));
             topHalf.add_run(match_size(g.top_half_sampling(typeProb)));
             minDegree.add_run(match_size(g.min_degree()));
             jailletLu.add_run(match_size(g.jaillet_lu(jlList)));
+            manshadiGS.add_run(match_size(g.manshadi_et_al(typeProb)));
+            
         }
         
         double opt = compute_mean_std(OPT.resRun).first;
