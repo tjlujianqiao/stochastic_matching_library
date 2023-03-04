@@ -75,6 +75,7 @@ struct resAlg{
  SWR("SWR"),
  ranking("Ranking"),
  minDegree("MinDegree"),
+ feldmanMMM("FeldManEtAl"),
  manshadiGS("ManshadiEtAl"),
  jailletLu("JailletLu"),
  topHalf("TopHalfSampling"),
@@ -84,7 +85,7 @@ struct resAlg{
 
 int main()
 {
-    resAlg* resPointer[] = {&OPT, &SWR, &ranking, &balanceSWR, &balanceOCS, &poissonOCS, &topHalf, &minDegree, &jailletLu, &manshadiGS};
+    resAlg* resPointer[] = {&OPT, &SWR, &ranking, &balanceSWR, &balanceOCS, &poissonOCS, &topHalf, &minDegree, &jailletLu, &manshadiGS, &feldmanMMM};
     
     
     int numGraph = 10;
@@ -102,6 +103,9 @@ int main()
         vector<double> offMass = g.poisson_offline_mass(typeProb);
         vector<vector<int>> jlList = g.jaillet_lu_list();
         
+        vector<int> blueF, redF;
+        tie(blueF, redF) = g.feldman_et_al_color();
+        
         
         for (int j = 0; j < numSample; j++)
         {
@@ -117,7 +121,7 @@ int main()
             minDegree.add_run(match_size(g.min_degree()));
             jailletLu.add_run(match_size(g.jaillet_lu(jlList)));
             manshadiGS.add_run(match_size(g.manshadi_et_al(typeProb)));
-            
+            feldmanMMM.add_run(match_size(g.feldman_et_al(blueF, redF)));
         }
         
         double opt = compute_mean_std(OPT.resRun).first;

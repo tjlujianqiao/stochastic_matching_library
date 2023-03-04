@@ -28,19 +28,18 @@ vector<vector<int>> graph::jaillet_lu_list()
 
 vector<int> graph::jaillet_lu(vector<vector<int>> &jlList)
 {
-    vector<int> res(types.size(), -1);
-    vector<bool> offLine(adj.size(), false);
-    mt19937 rng(random_device{}());
+    vector<int> res(realSize, -1);
+    vector<bool> matched(offSize + onSize, false);
 
-    for (int i = 0; i < onSize; i++)
+    for (int i = 0; i < realSize; i++)
     {
         shuffle(jlList[types[i]].begin(), jlList[types[i]].end(), rng);
         for (int j : jlList[types[i]])
         {
-            if (j != -1 && not offLine[j])
+            if (j != -1 && not matched[j])
             {
-                res[i] = i;
-                offLine[j] = true;
+                res[i] = j;
+                matched[j] = true;
                 break;
             }
         }

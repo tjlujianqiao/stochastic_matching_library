@@ -66,7 +66,6 @@ public:
     
     vector<int> maximum_matching();
     
-    
     vector<int> sampling_without_replacement(map<pair<int, int>, double> &typeProb);
     map<pair<int, int>, double> optimal_matching_prob(int n_samples, int onSizeSample);
 
@@ -74,11 +73,14 @@ public:
     vector<double> poisson_offline_mass(map<pair<int, int>, double> &typeProb);
 
     vector<int> top_half_sampling(map<pair<int, int>, double> &typeProb);
+    
+    pair<vector<int>, vector<int>> feldman_et_al_color();
+    vector<int> feldman_et_al(vector<int> &blue, vector<int> &red);
+    
+    vector<int> manshadi_et_al(map<pair<int, int>, double> &typeProb);
 
     vector<vector<int>> jaillet_lu_list();
     vector<int> jaillet_lu(vector<vector<int>> &jlList);
-
-    vector<int> manshadi_et_al(map<pair<int, int>, double> &typeProb);
 
     vector<int> min_degree();
 
