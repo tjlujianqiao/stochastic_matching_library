@@ -13,8 +13,7 @@ vector<int> graph::min_degree()
                 degree[j]++, unmatchedNeighbors.push_back(make_pair(degree[j], j));
         if (unmatchedNeighbors.size())
         {
-            sort(unmatchedNeighbors.begin(), unmatchedNeighbors.end(), [](const pair<int, int> &p1, const pair<int, int> &p2)
-                 { return (p1.first == p2.first) ? p1.second < p2.second : p1.first < p2.first; });
+            sort(unmatchedNeighbors.begin(), unmatchedNeighbors.end());
             index = unmatchedNeighbors[0].second;
             matched[index] = true;
             res[i] = index;
