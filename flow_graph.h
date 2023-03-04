@@ -50,7 +50,7 @@ struct flow_graph{
             q.pop();
             for (int u_e = 0; u_e < adj[u].size(); u_e++){
                 int v = adj[u][u_e].v;
-                if ( !dep[v] && adj[u][u_e].cap){
+                if (!dep[v] && adj[u][u_e].cap){
                     dep[v] = dep[u] + 1;
                     q.push(v);
                 }
@@ -83,7 +83,9 @@ struct flow_graph{
         return 0;
     }
     
-    void maxflow()
+    
+    
+    void max_flow()
     {
         dep.resize(t + 1);
         cur.resize(t + 1);
@@ -91,6 +93,31 @@ struct flow_graph{
             fill(cur.begin(), cur.end(), 0);
             while (int d = dfs(s, inf));
         }
+    }
+    
+    
+    
+    vector<int> min_cut()
+    {
+        vector<int> inS(t + 1, 0);
+        queue<int> Q;
+        Q.push(s);
+        inS[s] = 1;
+        
+        while(!Q.empty())
+        {
+            int u = Q.front();
+            Q.pop();
+            
+            for (int u_e = 0; u_e < adj[u].size(); u_e++){
+                int v = adj[u][u_e].v;
+                if (!inS[v] && adj[u][u_e].cap){
+                    inS[v] = 1;
+                    Q.push(v);
+                }
+            }
+        }
+        return inS;
     }
     
 };

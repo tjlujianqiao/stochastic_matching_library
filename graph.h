@@ -77,6 +77,9 @@ public:
     pair<vector<int>, vector<int>> feldman_et_al_color();
     vector<int> feldman_et_al(vector<int> &blue, vector<int> &red);
     
+    pair<vector<int>, vector<int>> bahmani_kapralov_color();
+    vector<int> bahmani_kapralov(vector<int> &blue, vector<int> &red);
+    
     vector<int> manshadi_et_al(map<pair<int, int>, double> &typeProb);
 
     vector<vector<int>> jaillet_lu_list();

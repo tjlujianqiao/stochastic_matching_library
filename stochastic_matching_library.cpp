@@ -77,6 +77,7 @@ struct resAlg{
  ranking("Ranking"),
  minDegree("MinDegree"),
  feldmanMMM("FeldManEtAl"),
+ BahmaniKapralov("BahmaniKapralov"),
  manshadiGS("ManshadiEtAl"),
  jailletLu("JailletLu"),
  topHalf("TopHalfSampling"),
@@ -86,10 +87,10 @@ struct resAlg{
 
 int main()
 {
-    resAlg* resPointer[] = {&OPT, &SWR, &ranking, &balanceSWR, &balanceOCS, &poissonOCS, &topHalf, &minDegree, &jailletLu, &manshadiGS, &feldmanMMM};
+    resAlg* resPointer[] = {&OPT, &SWR, &ranking, &balanceSWR, &balanceOCS, &poissonOCS, &topHalf, &minDegree, &jailletLu, &manshadiGS, &feldmanMMM, &BahmaniKapralov};
     
     
-    int numGraph = 1;
+    int numGraph = 10;
     int numSample = 1000;
     
     cout << "Rep";
@@ -107,6 +108,9 @@ int main()
         vector<int> blueF, redF;
         tie(blueF, redF) = g.feldman_et_al_color();
         
+        vector<int> blueB, redB;
+        tie(blueB, redB) = g.bahmani_kapralov_color();
+        
         
         for (int j = 0; j < numSample; j++)
         {
@@ -123,6 +127,7 @@ int main()
             jailletLu.add_run(match_size(g.jaillet_lu(jlList)));
             manshadiGS.add_run(match_size(g.manshadi_et_al(typeProb)));
             feldmanMMM.add_run(match_size(g.feldman_et_al(blueF, redF)));
+            BahmaniKapralov.add_run(match_size(g.bahmani_kapralov(blueB, redB)));
         }
         
         double opt = compute_mean_std(OPT.resRun).first;

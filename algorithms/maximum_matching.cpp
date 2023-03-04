@@ -13,7 +13,7 @@ vector<int> graph::maximum_matching()
     for (int j = realSize; j < realSize + offSize; j++)
         g.add_edge(j, t, 1);
     
-    g.maxflow();
+    g.max_flow();
     
     vector<int> res(realSize, -1);
     for(int i = 0; i < realSize; i++)

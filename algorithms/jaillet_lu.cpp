@@ -13,7 +13,7 @@ vector<vector<int>> graph::jaillet_lu_list()
     for (int j = onSize; j < onSize + offSize; j++)
         g.add_edge(j, t, 3);
 
-    g.maxflow();
+    g.max_flow();
 
     vector<vector<int>> res(onSize, vector<int>());
     

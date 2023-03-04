@@ -16,7 +16,7 @@ pair<vector<int>, vector<int>> graph::feldman_et_al_color()
     for (int j = onSize; j < onSize + offSize; j++)
         g.add_edge(j, t, 2);
 
-    g.maxflow();
+    g.max_flow();
     
     decomposite_graph gDecom(onSize + offSize, onSize);
     for (int i = 0; i < onSize; i++)
