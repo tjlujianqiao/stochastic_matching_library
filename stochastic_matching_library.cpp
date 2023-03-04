@@ -6,6 +6,8 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <cstdio>
+
 
 
 using namespace std;
@@ -26,81 +28,103 @@ int match_size(const vector<int> &res)
 }
 
 
-void compute_mean_std(const vector<double> &res, double &mean, double &std){
-    mean = 0;
+pair<double,double> compute_mean_std(const vector<double> &res){
+    double mean = 0;
     for (auto item: res) mean += item;
     mean /= res.size();
     
-    std = 0;
+    double std = 0;
     for (auto item: res) std += (item - mean) * (item - mean);
     
     std = sqrt(std / (res.size() - 1));
+    
+    return make_pair(mean, std);
 }
 
 
-int main()
-{
-    graph g = generate_from_file("real_world/bio-CE-GN/bio-CE-GN.txt");
-    // preprocess
-    
-    int numSample = 1000;
-    int realSize = g.online_size();
+struct resAlg{
+    string name;
+    vector<double> resRun;
+    vector<double> resSample;
+    vector<pair<double, double>> resGraph;
     
     
-    map<pair<int, int>, double> typeProb = g.optimal_matching_prob(numSample, realSize);
+    resAlg(string s){
+        name = s;
+        resRun = {};
+        resSample = {};
+        resGraph = {};
+    }
     
-    vector<double> offMass = g.poisson_offline_mass(typeProb);
-	
-    vector<double> OPT, SWR, ranking, balanceSWR, balanceOCS, poissonOCS, topHalf, minDegree;
+    void add_run(double item){
+        resRun.push_back(item);
+    }
     
-    for (int i = 0; i < numSample; i++){
-        if(i%10==0)cout<<"WORKING on "<<i<<endl;
-        g.realize(realSize);
-        
-        OPT.push_back(match_size(g.maximum_matching()));
-        
-        SWR.push_back(match_size(g.sampling_without_replacement(typeProb)));
-        
-        ranking.push_back(match_size(g.ranking()));
-        
-        balanceSWR.push_back(match_size(g.balance_SWR()));
-        
-        balanceOCS.push_back(match_size(g.balance_OCS()));
-        
-        poissonOCS.push_back(match_size(g.poisson_OCS(offMass, typeProb)));
-        
-        topHalf.push_back(match_size(g.top_half_sampling(typeProb)));
-        
-        minDegree.push_back(match_size(g.min_degree()));
+    void summary_run(double base = 1){
+        resSample.push_back(compute_mean_std(resRun).first / base);
+        resRun.clear();
+    }
+    
+    void summary_sample(){
+        resGraph.push_back(compute_mean_std(resSample));
+        resSample.clear();
     }
     
     
+}OPT("OPT"), SWR("SWR"), ranking("Ranking"), balanceSWR("BalanceSWR"), balanceOCS("BalanceOCS"), poissonOCS("PoissonOCS"), topHalf("TopHalfSampling"), minDegree("MinDegree");
+
+int main()
+{
+    resAlg* resPointer[] = {&OPT, &SWR, &ranking, &balanceSWR, &balanceOCS, &poissonOCS, &topHalf, &minDegree};
     
-    double mean, std;
-    compute_mean_std(OPT, mean, std);
-    cout<<"OPT:        "<<mean<<" "<<std<<endl;
     
-    double x, y;
-    compute_mean_std(SWR, x, y);
-    cout<<"SWR:        "<<x / mean<<" "<<y / mean<<endl;
+    int numGraph = 5;
+    int numSample = 1000;
     
-    compute_mean_std(ranking, x, y);
-    cout<<"Ranking:    "<<x / mean<<" "<<y / mean<<endl;
+    cout << "Rep";
+    for(int i = 1; i <= numGraph; i++)
+    {
+        cout << " " << i;
+        graph g = generate_from_file("real_world/bio-CE-GN/bio-CE-GN.txt");
+        
+        //Preprocessing
+        int realSize = g.online_size();
+        map<pair<int, int>, double> typeProb = g.optimal_matching_prob(numSample, realSize);
+        vector<double> offMass = g.poisson_offline_mass(typeProb);
+        
+        for (int j = 0; j < numSample; j++)
+        {
+            g.realize(realSize);
+            
+            OPT.add_run(match_size(g.maximum_matching()));
+            SWR.add_run(match_size(g.sampling_without_replacement(typeProb)));
+            ranking.add_run(match_size(g.ranking()));
+            balanceSWR.add_run(match_size(g.balance_SWR()));
+            balanceOCS.add_run(match_size(g.balance_OCS()));
+            poissonOCS.add_run(match_size(g.poisson_OCS(offMass, typeProb)));
+            topHalf.add_run(match_size(g.top_half_sampling(typeProb)));
+            minDegree.add_run(match_size(g.min_degree()));
+        }
+        
+        double opt = compute_mean_std(OPT.resRun).first;
+        for (auto j : resPointer) (*j).summary_run(opt);
+    }
     
-    compute_mean_std(balanceSWR, x, y);
-    cout<<"BalanceSWR: "<<x / mean<<" "<<y / mean<<endl;
+    //If you want to summarize the data on one graph, uncomment the following line
+    //for (auto j : resPointer) (*j).summary_sample();
     
-    compute_mean_std(balanceOCS, x, y);
-    cout<<"BalanceOCS: "<<x / mean<<" "<<y / mean<<endl;
+    cout << endl;
+    for (auto i : resPointer) {
+        
+        cout << (*i).name << ":";
+        for(auto j : (*i).resSample) 
+            cout<<" "<<j;
+        
+        cout<<endl;
+        
+    }
     
-    compute_mean_std(poissonOCS, x, y);
-    cout<<"PoissonOCS: "<<x / mean<<" "<<y / mean<<endl;
-    
-    compute_mean_std(topHalf, x, y);
-    cout<<"TopHalf:    "<<x / mean<<" "<<y / mean<<endl;
-    
-    compute_mean_std(minDegree, x, y);
-    cout<<"MinDegree:  "<<x / mean<<" "<<y / mean<<endl;
+    cout<<endl;
     
 	return 0;
 }
