@@ -1,55 +1,32 @@
-vector<vector<int>> graph::jaillet_lu_prob()
+vector<vector<int>> graph::jaillet_lu_list()
 {
-    map<pair<int, int>, int> rGraph;
-    pair<int, int> e;
-    int s = adj.size(), t = adj.size() + 1;
-
-    for (int i = 0; i < onSize; i++)
-        rGraph[make_pair(s,i)] = 3;
-
-    for (int j = onSize; j < onSize + offSize; j++)
-        rGraph[make_pair(j,t)] = 3;
-
+    int s = onSize + offSize, t = s + 1;
+    flow_graph g(s, t);
+    
     for (int i = 0; i < onSize; i++)
         for (int j : adj[i])
-            rGraph[make_pair(i,j)] = 2;
+            g.add_edge(i, j, 2);
 
-    vector<vector<int>> adj2 = adj;
-    adj2.push_back(vector<int>());
-    adj2.push_back(vector<int>());
     for (int i = 0; i < onSize; i++)
-    {
-        adj2[i].push_back(s);
-        adj2[s].push_back(i);
-    }
-    for (int i = onSize; i < onSize + offSize; i++)
-    {
-        adj2[i].push_back(t);
-        adj2[t].push_back(i);
-    }
-    // fordFulkerson(rGraph, adj2, s, t);
+        g.add_edge(s, i, 3);
+
+    for (int j = onSize; j < onSize + offSize; j++)
+        g.add_edge(j, t, 3);
+
+    g.maxflow();
 
     vector<vector<int>> res(onSize, vector<int>());
-    for (int i = 0; i < onSize; i++)
-    {
-        for (auto j : adj[i])
-        {
-            e = make_pair(i, j);
-            if (rGraph[e] < 2)
-            {
-                for (int k = 0; k < 2 - rGraph[e]; k++)
-                    res[i].push_back(j);
-            }
-        }
-        while (res[i].size() < 3)
-            res[i].push_back(-1);
-    }
+    
+    for (int i = 0; i < onSize; i++) 
+        for (auto e : g.adj[i])
+            for (int j = 0; j < e.flow; j++)
+                res[i].push_back(e.v);
     return res;
 }
 
 
 
-vector<int> graph::jaillet_lu_matching( vector<vector<int>> &jlProb)
+vector<int> graph::jaillet_lu(vector<vector<int>> &jlList)
 {
     vector<int> res(types.size(), -1);
     vector<bool> offLine(adj.size(), false);
@@ -57,8 +34,8 @@ vector<int> graph::jaillet_lu_matching( vector<vector<int>> &jlProb)
 
     for (int i = 0; i < onSize; i++)
     {
-        shuffle(jlProb[types[i]].begin(), jlProb[types[i]].end(), rng);
-        for (int j : jlProb[types[i]])
+        shuffle(jlList[types[i]].begin(), jlList[types[i]].end(), rng);
+        for (int j : jlList[types[i]])
         {
             if (j != -1 && not offLine[j])
             {

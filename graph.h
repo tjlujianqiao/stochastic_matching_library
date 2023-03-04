@@ -75,8 +75,8 @@ public:
 
     vector<int> top_half_sampling(map<pair<int, int>, double> &typeProb);
 
-    vector<vector<int>> jaillet_lu_prob();
-    vector<int> jaillet_lu_matching( vector<vector<int>> &jlProb);
+    vector<vector<int>> jaillet_lu_list();
+    vector<int> jaillet_lu(vector<vector<int>> &jlList);
 
     vector<int> manshadi(map<pair<int, int>, double> &typeProb);
 

@@ -4,7 +4,7 @@ vector<int> graph::maximum_matching()
     flow_graph g(s, t);
     
     for (int i = 0; i < realSize; i++)
-        for (auto j : adj[types[i]])
+        for (int j : adj[types[i]])
             g.add_edge(i, j - onSize + realSize, 1);
         
     for (int i = 0; i < realSize; i++)
@@ -16,9 +16,10 @@ vector<int> graph::maximum_matching()
     g.maxflow();
     
     vector<int> res(realSize, -1);
-    for(int i = 0; i < realSize; i++) for (auto e : g.adj[i])
-        if (e.flow > 0)
-            res[i] = e.v - realSize + onSize;
+    for(int i = 0; i < realSize; i++)
+        for (auto e : g.adj[i])
+            if (e.flow > 0)
+                res[i] = e.v - realSize + onSize;
             
     return res;
 }

@@ -71,14 +71,22 @@ struct resAlg{
     }
     
     
-}OPT("OPT"), SWR("SWR"), ranking("Ranking"), balanceSWR("BalanceSWR"), balanceOCS("BalanceOCS"), poissonOCS("PoissonOCS"), topHalf("TopHalfSampling"), minDegree("MinDegree");
+}OPT("OPT"),
+ SWR("SWR"),
+ ranking("Ranking"),
+ balanceSWR("BalanceSWR"),
+ balanceOCS("BalanceOCS"),
+ poissonOCS("PoissonOCS"),
+ topHalf("TopHalfSampling"),
+ minDegree("MinDegree"),
+ jailletLu("JailletLu");
 
 int main()
 {
-    resAlg* resPointer[] = {&OPT, &SWR, &ranking, &balanceSWR, &balanceOCS, &poissonOCS, &topHalf, &minDegree};
+    resAlg* resPointer[] = {&OPT, &SWR, &ranking, &balanceSWR, &balanceOCS, &poissonOCS, &topHalf, &minDegree, &jailletLu};
     
     
-    int numGraph = 5;
+    int numGraph = 10;
     int numSample = 1000;
     
     cout << "Rep";
@@ -91,6 +99,8 @@ int main()
         int realSize = g.online_size();
         map<pair<int, int>, double> typeProb = g.optimal_matching_prob(numSample, realSize);
         vector<double> offMass = g.poisson_offline_mass(typeProb);
+        vector<vector<int>> jlList = g.jaillet_lu_list();
+        
         
         for (int j = 0; j < numSample; j++)
         {
@@ -104,6 +114,7 @@ int main()
             poissonOCS.add_run(match_size(g.poisson_OCS(offMass, typeProb)));
             topHalf.add_run(match_size(g.top_half_sampling(typeProb)));
             minDegree.add_run(match_size(g.min_degree()));
+            jailletLu.add_run(match_size(g.jaillet_lu(jlList)));
         }
         
         double opt = compute_mean_std(OPT.resRun).first;
