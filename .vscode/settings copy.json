@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "*.cpp": "cpp",
+        "fstream": "cpp",
+        "vector": "cpp",
+        "random": "cpp",
+        "ctime": "cpp",
+        "iomanip": "cpp",
+        "map": "cpp",
+        "iostream": "cpp",
+        "iosfwd": "cpp",
+        "type_traits": "cpp",
+        "solvelp": "cpp",
+        "__availability": "cpp",
+        "string": "cpp"
+    }
+}

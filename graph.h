@@ -15,7 +15,7 @@ public:
             adj[i] = {};
         
         realSize = 0;
-        type.clear();
+        types.clear();
     }
     
     // Add an edge (i, j)
@@ -42,17 +42,17 @@ public:
     void realize(int n)
     {
         realSize = n;
-        type.resize(realSize);
+        types.resize(realSize);
         uniform_int_distribution<int> typeDist(0, onSize - 1);
         for (int i = 0; i < realSize; i++)
-            type[i] = typeDist(rng);
+            types[i] = typeDist(rng);
     }
     
     //Randomly construct a realization graph with n online vertices
     void print_type()
     {
         cout << "Type list:";
-        for (int i : type) cout << " " << i;
+        for (int i : types) cout << " " << i;
         cout << endl;
     }
     
@@ -60,13 +60,35 @@ public:
 //NOTE: All following functions compute matchings in realization graph
     
     vector<int> maximum_matching();
+
+    vector<int> sampling_without_replacement( map<pair<int, int>, double> &typeProb);
+    map<pair<int, int>, double> optimal_matching_prob(int n_samples, int onSizeSample);
+
+    vector<int> possion_OCS(const vector<double> &offMass, map<pair<int, int>, double> &typeProb);
+    void poisson_offline_mass(map<pair<int, int>, double> &typeProb, vector<double> &offMass);
+
+    vector<int> tophalf_sampling( map<pair<int, int>, double> &typeProb);
+
+    vector<vector<int>> jaillet_lu_prob();
+    vector<int> jaillet_lu_matching( vector<vector<int>> &jlProb);
+
+    vector<int> manshadi(map<pair<int, int>, double> &typeProb);
+
+    vector<int> min_degree();
+
+    vector<int> ranking();
+
+    vector<int> balance_SWR();
+    vector<int> balance_OCS();
+
+
     
 private:
     // Adjacency list representation
     vector<vector<int>> adj;
     
     // Type of each online vertex in realization graph
-    vector<int> type;
+    vector<int> types;
     
     // Number of online type
     int onSize;

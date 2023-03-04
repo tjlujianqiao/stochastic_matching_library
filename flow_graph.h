@@ -6,8 +6,10 @@ struct flow_graph{
     struct edge
     {
         int v, cap, flow, rev;
+        edge(int v, int cap, int flow, int rev) : v(v), cap(cap), flow(flow), rev(rev){}
     };
     
+
     
     vector<vector<edge>> adj;
     
