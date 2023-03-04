@@ -15,6 +15,7 @@ mt19937 rng(random_device{}());
 
 #include "graph.h"
 #include "flow_graph.h"
+#include "decomposite_graph.h"
 #include "read_file.cpp"
 #include "algorithms/algorithms.h"
 
@@ -88,7 +89,7 @@ int main()
     resAlg* resPointer[] = {&OPT, &SWR, &ranking, &balanceSWR, &balanceOCS, &poissonOCS, &topHalf, &minDegree, &jailletLu, &manshadiGS, &feldmanMMM};
     
     
-    int numGraph = 10;
+    int numGraph = 1;
     int numSample = 1000;
     
     cout << "Rep";

@@ -18,77 +18,22 @@ pair<vector<int>, vector<int>> graph::feldman_et_al_color()
 
     g.maxflow();
     
-    vector<int> visit(t + 1, 0);
-    
-    for (int i = 0; i < onSize + offSize; i++)
-        if (visit[i] < 2)
-        {
-            int cur = i, pre = -1, flag;
-            visit[i] = 1;
-            do
-            {
-                flag = false;
-                for (auto e : g.adj[cur])
-                    if (e.flow && e.v < onSize + offSize && e.v != pre)
-                    {
-                        int next = e.v;
-                        if (!visit[next])
-                        {
-                            visit[next] = 1;
-                            pre = cur, cur = next;
-                            flag = true;
-                            break;
-                        }
-                    }
-            }while (flag);
-            
-            int start = cur;
-            vector<int> vList;
-            vList.push_back(start);
-            visit[start] = 2;
-            pre = -1;
-            bool isCycle = false;
-            
-            do
-            {
-                flag = false;
-                for (auto e : g.adj[cur])
-                    if (e.flow && e.v < onSize + offSize && e.v != pre)
-                    {
-                        int next = e.v;
-                        if (visit[next] < 2)
-                        {
-                            visit[next] = 2;
-                            vList.push_back(next);
-                            pre = cur, cur = next;
-                            flag = true;
-                            break;
-                        }
-                        else if (next == start)
-                        {
-                            vList.push_back(next);
-                            isCycle = true;
-                            break;
-                        }
-                    }
-            }
-            while(flag);
-            
-            for (int j = 0; j < vList.size() - 1; j++)
-            {
-                int x = vList[j], y = vList[j + 1];
-                if (x > y) swap(x, y);
+    decomposite_graph gDecom(onSize + offSize, onSize);
+    for (int i = 0; i < onSize; i++)
+        for (auto e : g.adj[i])
+            if (e.flow > 0)
+                gDecom.add_edge(i, e.v);
                 
-                if (isCycle) //Cycle
-                    if (j % 2 == 0) blue[x] = y; else red[x] = y;
-                else if (vList.size() % 2 == 0) //Odd-length paths
-                    if (j % 2 == 0) blue[x] = y; else red[x] = y;
-                else if (vList[0] >= onSize) //Even-length paths starting from an offline vertex
-                    if (j % 2 == 0) blue[x] = y; else red[x] = y;
-                else                         //Even-length paths starting from an online vertex
-                    if (j % 2 == 1 || j == 0) blue[x] = y; else red[x] = y;
-            }
-        }        
+    gDecom.set_color();
+    
+    for (int i = 0; i < onSize; i++)
+        for (int j : adj[i])
+        {
+            if (gDecom.color[i][j] == 1)
+                blue[i] = j;
+            if (gDecom.color[i][j] == 2)
+                red[i] = j;
+        }
         
     return make_pair(blue, red);
 }
