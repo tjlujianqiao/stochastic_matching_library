@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "*.cpp": "cpp",
-        "map": "cpp",
-        "__locale": "cpp",
-        "vector": "cpp",
-        "iosfwd": "cpp"
-    }
-}
