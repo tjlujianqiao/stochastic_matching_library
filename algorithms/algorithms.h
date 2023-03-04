@@ -4,6 +4,6 @@
 #include "jaillet_lu.cpp"
 #include "manshadi.cpp"
 #include "min_degree.cpp"
-#include "tophalf_sampling.cpp"
+#include "top_half_sampling.cpp"
 #include "ranking.cpp"
 #include "balance.cpp"
