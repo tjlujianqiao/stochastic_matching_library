@@ -1,29 +1,27 @@
 vector<int> graph::ranking()
 {
-    vector<int> rank(realSize, 0);
+    vector<int> rank(onSize + offSize, 0);
     vector<int> res(realSize, -1);
     vector<int> matched(onSize + offSize, -1);
 
-    for (int j = 0; j < onSize + offSize; j++)
-        rank[j] = j;
+    iota(rank.begin(), rank.end(), 0);
+    shuffle(rank.begin(), rank.end(), rng);
 
-    shuffle(rank.begin() + onSize, rank.end(), rng);
-
-    vector<int> sortedNb;
 
     for (int i = 0; i < realSize; i++)
     {
-        sortedNb = adj[types[i]];
-        sort(sortedNb.begin(), sortedNb.end(), [&rank](const int& j1, const int & j2) {return rank[j1] > rank[j2];});
-        for (int j : sortedNb)
-        {
+        int match = -1;
+            
+        
+        for (int j : adj[types[i]])
             if (matched[j] == -1)
-            {
-                res[i] = j;
-                matched[j] = i;
-                break;
-            }
-        }
+                if (match == -1 || rank[j] > rank[match])
+                    match = j;
+
+        res[i] = match;
+        if (match != -1)
+            matched[match] = i;
+        
     }
     return res;
 }

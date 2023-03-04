@@ -25,8 +25,8 @@ graph generate_from_file(string path)
         //Index starts from 1 in input file
         x--, y--;
         
-        if (id[x] > id[y])
-            swap(x, y);
+        //if (id[x] > id[y])
+            //swap(x, y);
         
         if (id[x] < n/2 && id[y] >= n/2 && id[y] < n/2 + n/2)
             g.add_edge(id[x], id[y]);

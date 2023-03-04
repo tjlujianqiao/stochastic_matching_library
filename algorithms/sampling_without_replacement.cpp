@@ -1,7 +1,7 @@
-vector<int> graph::sampling_without_replacement( map<pair<int, int>, double> &typeProb)
+vector<int> graph::sampling_without_replacement(map<pair<int, int>, double> &typeProb)
 {
     vector<int> res(realSize, -1);
-    vector<bool> matched(onSize+ offSize, false);
+    vector<bool> matched(onSize + offSize, false);
     // ith means ith arrival online vertex while i means type  i
     for (int i = 0; i < realSize; i++)
     {
@@ -44,20 +44,19 @@ vector<int> graph::sampling_without_replacement( map<pair<int, int>, double> &ty
 
 
 
-map<pair<int, int>, double> graph::optimal_matching_prob(int n_samples, int onSizeSample)
+map<pair<int, int>, double> graph::optimal_matching_prob(int numSample, int realSize)
 {
     uniform_int_distribution<int> uni(0, onSize - 1);
-    mt19937 rng(random_device{}());
     map<pair<int, int>, double> Prob;
     vector<int> res;
-    for (int count = 0; count < n_samples; count++)
+    for (int count = 0; count < numSample; count++)
     {
-        realize(onSizeSample);
+        realize(realSize);
         res = maximum_matching();
-        for (int i = 0; i < onSizeSample; i++)
+        for (int i = 0; i < realSize; i++)
         {
             if (res[i] != -1)
-                Prob[make_pair(types[i], res[i])] += 1.0 / n_samples;
+                Prob[make_pair(types[i], res[i])] += 1.0 / numSample;
         }
     }
     return Prob;

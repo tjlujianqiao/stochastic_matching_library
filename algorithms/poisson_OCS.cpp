@@ -39,13 +39,13 @@ vector<int> graph::poisson_OCS(const vector<double> &offMass, map<pair<int, int>
     }
     return res;
 }
-void graph::poisson_offline_mass(map<pair<int, int>, double> &typeProb, vector<double> &offMass)
+vector<double> graph::poisson_offline_mass(map<pair<int, int>, double> &typeProb)
 {
-    offMass.clear();
+    vector<double> offMass = {};
     for (int i = 0; i < onSize + offSize; i++)
         offMass.push_back(0.0);
     for (int i = 0; i < onSize; i++)
         for (int j : adj[i])
             offMass[j] += typeProb[make_pair(i, j)];
-    return;
+    return offMass;
 }

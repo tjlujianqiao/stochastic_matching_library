@@ -26,20 +26,81 @@ int match_size(const vector<int> &res)
 }
 
 
+void compute_mean_std(const vector<double> &res, double &mean, double &std){
+    mean = 0;
+    for (auto item: res) mean += item;
+    mean /= res.size();
+    
+    std = 0;
+    for (auto item: res) std += (item - mean) * (item - mean);
+    
+    std = sqrt(std / (res.size() - 1));
+}
+
+
 int main()
 {
     graph g = generate_from_file("real_world/bio-CE-GN/bio-CE-GN.txt");
     // preprocess
-    map<pair<int, int>, double> typeProb;
+    
+    int numSample = 1000;
+    int realSize = g.online_size();
+    
+    
+    map<pair<int, int>, double> typeProb = g.optimal_matching_prob(numSample, realSize);
+    
+    vector<double> offMass = g.poisson_offline_mass(typeProb);
 	
-    for (int i = 0; i < 1000; i++){
-        g.realize(1000);
-        vector<int> match = g.maximum_matching();
-        vector<int> SWR= g.sampling_without_replacement(typeProb);
-        vector<int> ranking= g.ranking();
-        vector<int> balance_SWR= g.balance_SWR();
-        vector<int> balance_OCS= g.balance_OCS();
-        cout<<match_size(match)<<" ";
+    vector<double> OPT, SWR, ranking, balanceSWR, balanceOCS, poissonOCS, topHalf, minDegree;
+    
+    for (int i = 0; i < numSample; i++){
+        if(i%10==0)cout<<"WORKING on "<<i<<endl;
+        g.realize(realSize);
+        
+        OPT.push_back(match_size(g.maximum_matching()));
+        
+        SWR.push_back(match_size(g.sampling_without_replacement(typeProb)));
+        
+        ranking.push_back(match_size(g.ranking()));
+        
+        balanceSWR.push_back(match_size(g.balance_SWR()));
+        
+        balanceOCS.push_back(match_size(g.balance_OCS()));
+        
+        poissonOCS.push_back(match_size(g.poisson_OCS(offMass, typeProb)));
+        
+        topHalf.push_back(match_size(g.top_half_sampling(typeProb)));
+        
+        minDegree.push_back(match_size(g.min_degree()));
     }
+    
+    
+    
+    double mean, std;
+    compute_mean_std(OPT, mean, std);
+    cout<<"OPT:        "<<mean<<" "<<std<<endl;
+    
+    double x, y;
+    compute_mean_std(SWR, x, y);
+    cout<<"SWR:        "<<x / mean<<" "<<y / mean<<endl;
+    
+    compute_mean_std(ranking, x, y);
+    cout<<"Ranking:    "<<x / mean<<" "<<y / mean<<endl;
+    
+    compute_mean_std(balanceSWR, x, y);
+    cout<<"BalanceSWR: "<<x / mean<<" "<<y / mean<<endl;
+    
+    compute_mean_std(balanceOCS, x, y);
+    cout<<"BalanceOCS: "<<x / mean<<" "<<y / mean<<endl;
+    
+    compute_mean_std(poissonOCS, x, y);
+    cout<<"PoissonOCS: "<<x / mean<<" "<<y / mean<<endl;
+    
+    compute_mean_std(topHalf, x, y);
+    cout<<"TopHalf:    "<<x / mean<<" "<<y / mean<<endl;
+    
+    compute_mean_std(minDegree, x, y);
+    cout<<"MinDegree:  "<<x / mean<<" "<<y / mean<<endl;
+    
 	return 0;
 }

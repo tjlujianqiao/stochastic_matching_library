@@ -25,6 +25,11 @@ public:
         adj[j].push_back(i);
     }
     
+    int online_size()
+    {
+        return onSize;
+    }
+    
     // Print graph
     void print()
     {
@@ -60,14 +65,15 @@ public:
 //NOTE: All following functions compute matchings in realization graph
     
     vector<int> maximum_matching();
-
-    vector<int> sampling_without_replacement( map<pair<int, int>, double> &typeProb);
+    
+    
+    vector<int> sampling_without_replacement(map<pair<int, int>, double> &typeProb);
     map<pair<int, int>, double> optimal_matching_prob(int n_samples, int onSizeSample);
 
-    vector<int> possion_OCS(const vector<double> &offMass, map<pair<int, int>, double> &typeProb);
-    void poisson_offline_mass(map<pair<int, int>, double> &typeProb, vector<double> &offMass);
+    vector<int> poisson_OCS(const vector<double> &offMass, map<pair<int, int>, double> &typeProb);
+    vector<double> poisson_offline_mass(map<pair<int, int>, double> &typeProb);
 
-    vector<int> tophalf_sampling( map<pair<int, int>, double> &typeProb);
+    vector<int> top_half_sampling(map<pair<int, int>, double> &typeProb);
 
     vector<vector<int>> jaillet_lu_prob();
     vector<int> jaillet_lu_matching( vector<vector<int>> &jlProb);
@@ -80,8 +86,6 @@ public:
 
     vector<int> balance_SWR();
     vector<int> balance_OCS();
-
-
     
 private:
     // Adjacency list representation

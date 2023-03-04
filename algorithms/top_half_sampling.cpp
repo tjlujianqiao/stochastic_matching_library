@@ -1,4 +1,4 @@
-vector<int> graph::tophalf_sampling( map<pair<int, int>, double> &typeProb)
+vector<int> graph::top_half_sampling(map<pair<int, int>, double> &typeProb)
 {
     vector<int> res(realSize, -1);
     vector<bool> matched(onSize + offSize, false);
