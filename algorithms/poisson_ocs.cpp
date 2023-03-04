@@ -1,4 +1,4 @@
-vector<int> graph::poisson_OCS(const vector<double> &offMass, map<pair<int, int>, double> &typeProb)
+vector<int> graph::poisson_ocs(const vector<double> &offMass, map<pair<int, int>, double> &typeProb)
 {
     vector<int> res(realSize, -1);
     vector<bool> matched(onSize + offSize, false);
