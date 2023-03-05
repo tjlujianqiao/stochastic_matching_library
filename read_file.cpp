@@ -9,7 +9,6 @@ graph generate_from_file(string path, bool dup = false)
     // Ignore the first character % in line 2
     char ch;
     int n, m;
-    int x, y;
     fin >> ch >> m >> n;
     if (not dup)
     {
@@ -22,6 +21,7 @@ graph generate_from_file(string path, bool dup = false)
 
         for (int i = 0; i < m; i++)
         {
+            int x, y;
             fin >> x >> y;
             
             //Ignore the third number in line
@@ -42,10 +42,14 @@ graph generate_from_file(string path, bool dup = false)
     else
     {
         graph g(n, n);
-        g.add_edge(x, n + y);
         for (int i = 0; i < m; i++)
         {
+            int x, y;
             fin >> x >> y;
+            
+            //Ignore the third number in line
+            string line;
+            getline(fin, line);
 
             // Index starts from 1 in input file
             x--, y--;
