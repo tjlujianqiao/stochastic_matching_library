@@ -23,6 +23,10 @@ graph generate_from_file(string path, bool dup = false)
         for (int i = 0; i < m; i++)
         {
             fin >> x >> y;
+            
+            //Ignore the third number in line
+            string line;
+            getline(fin, line);
 
             // Index starts from 1 in input file
             x--, y--;
