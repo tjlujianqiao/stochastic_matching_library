@@ -100,12 +100,12 @@ const vector<resAlg*> resPointer = {&OPT, &SWR, &ranking, &balanceSWR, &balanceO
 
 const vector<pair<string, string>> file_name = 
 {
-    make_pair("real_world/bio-CE-GN/bio-CE-GN.txt", "bio-CE-GN.txt"),
-    make_pair("real_world/bio-CE-PG/bio-CE-PG.txt", "bio-CE-PG.txt"),
-    make_pair("real_world/econ-beause/econ-beause.txt", "econ-beause.txt"),
-    make_pair("real_world/econ-mbeaflw/econ-mbeaflw.txt", "econ-mbeaflw.txt"),
-    make_pair("real_world/socfb-Caltech36/socfb-Caltech36.txt", "socfb-Caltech36.txt"),
-    make_pair("real_world/socfb-Reed98/socfb-Reed98.txt", "socfb-Reed98.txt"),
+    make_pair("real_world/bio-CE-GN/bio-CE-GN.txt", "bio-CE-GN"),
+    make_pair("real_world/bio-CE-PG/bio-CE-PG.txt", "bio-CE-PG"),
+    make_pair("real_world/econ-beause/econ-beause.txt", "econ-beause"),
+    make_pair("real_world/econ-mbeaflw/econ-mbeaflw.txt", "econ-mbeaflw"),
+    make_pair("real_world/socfb-Caltech36/socfb-Caltech36.txt", "socfb-Caltech36"),
+    make_pair("real_world/socfb-Reed98/socfb-Reed98.txt", "socfb-Reed98"),
 };
 
 
