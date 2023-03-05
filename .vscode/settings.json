@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "*.cpp": "cpp",
-        "tuple": "cpp",
-        "iosfwd": "cpp",
-        "numeric": "cpp",
-        "vector": "cpp"
-    }
-}
