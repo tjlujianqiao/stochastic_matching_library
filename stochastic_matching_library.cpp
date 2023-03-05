@@ -100,12 +100,12 @@ const vector<resAlg*> resPointer = {&OPT, &SWR, &ranking, &balanceSWR, &balanceO
 
 const vector<pair<string, string>> file_name = 
 {
-    make_pair("real_world/bio-CE-GN/bio-CE-GN.txt", "bio-CE-GN"),
-    make_pair("real_world/bio-CE-PG/bio-CE-PG.txt", "bio-CE-PG"),
-    make_pair("real_world/econ-beause/econ-beause.txt", "econ-beause"),
-    make_pair("real_world/econ-mbeaflw/econ-mbeaflw.txt", "econ-mbeaflw"),
-    make_pair("real_world/socfb-Caltech36/socfb-Caltech36.txt", "socfb-Caltech36"),
-    make_pair("real_world/socfb-Reed98/socfb-Reed98.txt", "socfb-Reed98"),
+    make_pair("real_world/socfb-Caltech36/socfb-Caltech36.txt", "Caltech36"),
+    make_pair("real_world/socfb-Reed98/socfb-Reed98.txt", "Reed98"),
+    make_pair("real_world/bio-CE-GN/bio-CE-GN.txt", "CE-GN"),
+    make_pair("real_world/bio-CE-PG/bio-CE-PG.txt", "CE-PG"),
+    make_pair("real_world/econ-beause/econ-beause.txt", "beause"),
+    make_pair("real_world/econ-mbeaflw/econ-mbeaflw.txt", "mbeaflw")
 };
 
 
@@ -161,7 +161,7 @@ void work_from_file(string name)
     for (int i = 1; i <= numGraph; i++)
     {
         cout << " " << i;
-        graph g = generate_from_file(name);
+        graph g = generate_from_file(name, true);
 
         // Preprocessing
         int realSize = g.online_size();
