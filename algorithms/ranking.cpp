@@ -11,7 +11,6 @@ vector<int> graph::ranking()
     for (int i = 0; i < realSize; i++)
     {
         int match = -1;
-            
         
         for (int j : adj[types[i]])
             if (matched[j] == -1)

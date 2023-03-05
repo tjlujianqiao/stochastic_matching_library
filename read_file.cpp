@@ -1,38 +1,56 @@
-graph generate_from_file(string path)
+graph generate_from_file(string path, bool dup = false)
 {
     ifstream fin(path);
-    
-    //Ignore line 1
+
+    // Ignore line 1
     string line;
     getline(fin, line);
-    
-    //Ignore the first character % in line 2
+
+    // Ignore the first character % in line 2
     char ch;
     int n, m;
+    int x, y;
     fin >> ch >> m >> n;
-    
-    graph g(n/2, n/2);
-    
-    vector<int> id(n);
-    iota(id.begin(), id.end(), 0);
-    shuffle(id.begin(), id.end(), rng);
-    
-    for (int i = 0; i < m; i++)
+    if (not dup)
     {
-        int x, y;
-        fin >> x >> y;
-        
-        //Index starts from 1 in input file
-        x--, y--;
-        
-        //if (id[x] > id[y])
-            //swap(x, y);
-        
-        if (id[x] < n/2 && id[y] >= n/2 && id[y] < n/2 + n/2)
-            g.add_edge(id[x], id[y]);
+
+        graph g(n / 2, n / 2);
+
+        vector<int> id(n);
+        iota(id.begin(), id.end(), 0);
+        shuffle(id.begin(), id.end(), rng);
+
+        for (int i = 0; i < m; i++)
+        {
+            fin >> x >> y;
+
+            // Index starts from 1 in input file
+            x--, y--;
+
+            // if (id[x] > id[y])
+            // swap(x, y);
+            if (id[x] < n / 2 && id[y] >= n / 2 && id[y] < n / 2 + n / 2)
+                g.add_edge(id[x], id[y]);
+        }
+        fin.close();
+        return g;
     }
-    
-    fin.close();
-    
-    return g;
+    else
+    {
+        graph g(n, n);
+        g.add_edge(x, n + y);
+        for (int i = 0; i < m; i++)
+        {
+            fin >> x >> y;
+
+            // Index starts from 1 in input file
+            x--, y--;
+
+            // if (id[x] > id[y])
+            // swap(x, y);
+            g.add_edge(x, n + y);
+        }
+        fin.close();
+        return g;
+    }
 }

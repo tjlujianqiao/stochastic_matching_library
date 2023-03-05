@@ -1,4 +1,4 @@
-double fillWater(vector<double> &level, const double water)
+double fill_water(vector<double> &level, const double water)
 {
     double l = 0, r = water, eps = 1e-8;
     while ((r - l) > eps)
@@ -32,7 +32,7 @@ vector<int> graph::balance_swr()
         if (not level.size())
             continue;
 
-        double newLevel = fillWater(level, 1);
+        double newLevel = fill_water(level, 1);
 
         double mass = 0, chosen = 0;
         vector<pair<int, double>> validMass;
@@ -86,7 +86,7 @@ vector<int> graph::balance_ocs()
         if (not level.size())
             continue;
 
-        double newLevel = fillWater(level, 1);
+        double newLevel = fill_water(level, 1);
 
         double mass = 0, chosen = 0;
         for (int j : adj[types[i]])

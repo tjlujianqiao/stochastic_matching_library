@@ -1,0 +1,2 @@
+Algorithm
+OPT:1 SWR:0.944449 Ranking:0.922741 BalanceSWR:0.932447 BalanceOCS:0.930111 PoissonOCS:0.942889 TopHalfSampling:0.822103 MinDegree:0.934705 JailletLu:0.809612 ManshadiEtAl:0.807563 FeldManEtAl:0.784656 BahmaniKapralov:0.787776 
