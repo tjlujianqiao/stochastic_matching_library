@@ -82,20 +82,20 @@ struct resAlg
         resSample.clear();
     }
 
-} OPT("OPT"),
+}   OPT("OPT"),
     SWR("SWR"),
     ranking("Ranking"),
+    balanceSWR("BalanceSWR"),
+    balanceOCS("BalanceOCS"),
     minDegree("MinDegree"),
     feldmanMMM("FeldManEtAl"),
     BahmaniKapralov("BahmaniKapralov"),
     manshadiGS("ManshadiEtAl"),
     jailletLu("JailletLu"),
     topHalf("TopHalfSampling"),
-    poissonOCS("PoissonOCS"),
-    balanceSWR("BalanceSWR"),
-    balanceOCS("BalanceOCS");
+    poissonOCS("PoissonOCS");
 
-const vector<resAlg*> resPointer = {&OPT, &SWR, &ranking, &balanceSWR, &balanceOCS, &poissonOCS, &topHalf, &minDegree, &jailletLu, &manshadiGS, &feldmanMMM, &BahmaniKapralov};
+const vector<resAlg*> resPointer = {&OPT, &SWR, &poissonOCS, &minDegree, &balanceSWR, &balanceOCS, &ranking, &topHalf, &jailletLu, &manshadiGS, &BahmaniKapralov, &feldmanMMM};
 
 
 const vector<pair<string, string>> file_name = 
@@ -127,23 +127,24 @@ void write_to_files(string directory)
     fileResStd << endl;
     
     for (auto i : resPointer)
-    {
-
-        double avgMean = 0.0, avgStd = 0.0;
-
-        fileResMean << (*i).name << " ";
-        fileResStd << (*i).name << " ";
-        
-        for (auto j : (*i). resGraph)
+        if (i != &OPT)
         {
-            fileResMean << j.first  << " ";
-            fileResStd << j.second << " ";
+
+            double avgMean = 0.0, avgStd = 0.0;
+
+            fileResMean << (*i).name << " ";
+            fileResStd << (*i).name << " ";
+            
+            for (auto j : (*i). resGraph)
+            {
+                fileResMean << j.first  << " ";
+                fileResStd << j.second << " ";
+            }
+            
+            fileResMean << endl;
+            fileResStd << endl;
+            
         }
-        
-        fileResMean << endl;
-        fileResStd << endl;
-        
-    }
     fileResMean.close();
     fileResStd.close();
 
