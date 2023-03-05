@@ -13,6 +13,7 @@ mt19937 rng(random_device{}());
 
 #include "graph.h"
 #include "flow_graph.h"
+#include "cycle_break_graph.h"
 #include "decomposite_graph.h"
 #include "read_file.cpp"
 #include "algorithms/algorithms.h"
@@ -71,14 +72,19 @@ struct resAlg
 
     void summary_sample()
     {
-        vector<double> res1, res2;
-        for (auto item : resSample)
+        if (resSample.size() == 1)
         {
-            res1.push_back(item.first);
-            res2.push_back(item.second);
+            resGraph.push_back(resGraph[0]);
+            resSample.clear();
+            return;
         }
         
-        resGraph.push_back(compute_mean_std(res1));
+        
+        vector<double> res;
+        for (auto item : resSample)
+            res.push_back(item.first);
+        
+        resGraph.push_back(compute_mean_std(res));
         resSample.clear();
     }
 

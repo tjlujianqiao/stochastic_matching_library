@@ -15,12 +15,20 @@ vector<vector<int>> graph::jaillet_lu_list()
 
     g.max_flow();
 
+    cycle_break_graph gCycle(onSize);
+    for (int i = 0; i < onSize; i ++)
+        for (auto e : g.adj[i])
+            if (e.flow > 0)
+                gCycle.add_edge(i, e.v, e.flow);
+            
+    gCycle.cycle_break();
+
     vector<vector<int>> res(onSize, vector<int>());
     
     for (int i = 0; i < onSize; i++) 
-        for (auto e : g.adj[i])
-            for (int j = 0; j < e.flow; j++)
-                res[i].push_back(e.v);
+        for (auto e : gCycle.val[i])
+            for (int j = 0; j < e.second; j++)
+                res[i].push_back(e.first);
     return res;
 }
 
