@@ -98,10 +98,11 @@ struct resAlg
     BahmaniKapralov("BahmaniKapralov"),
     manshadiGS("ManshadiEtAl"),
     jailletLu("JailletLu"),
+    brubachSSX("BrubachEtAl"),
     topHalf("TopHalfSampling"),
     poissonOCS("PoissonOCS");
 
-const vector<resAlg*> resPointer = {&OPT, &SWR, &poissonOCS, &minDegree, &balanceSWR, &balanceOCS, &ranking, &topHalf, &jailletLu, &manshadiGS, &BahmaniKapralov, &feldmanMMM};
+const vector<resAlg*> resPointer = {&OPT, &SWR, &poissonOCS, &minDegree, &balanceSWR, &balanceOCS, &ranking, &topHalf, &brubachSSX, &jailletLu, &manshadiGS, &BahmaniKapralov, &feldmanMMM};
 
 
 const vector<pair<string, string>> file_name = 
@@ -115,10 +116,10 @@ const vector<pair<string, string>> file_name =
 };
 
 
-void write_to_files(string directory)
+void save_results_to_files(string directory)
 {
     ofstream fileResMean, fileResStd;
-    cout << "Save Results into the file:" << directory + "/" + "(resMean.txt,resStd.txt)" << endl;
+    cout << "Save results into file " << directory + "/" + "(resMean.txt,resStd.txt)" << endl;
     fileResMean.open(directory + "/" + "resMean.txt");
     fileResStd.open(directory + "/" + "resStd.txt");
     
@@ -135,9 +136,6 @@ void write_to_files(string directory)
     for (auto i : resPointer)
         if (i != &OPT)
         {
-
-            double avgMean = 0.0, avgStd = 0.0;
-
             fileResMean << (*i).name << " ";
             fileResStd << (*i).name << " ";
             
@@ -175,6 +173,8 @@ void work_from_file(string name)
         map<pair<int, int>, double> typeProb = g.optimal_matching_prob(numSample, realSize);
         vector<double> offMass = g.poisson_offline_mass(typeProb);
         vector<vector<int>> jlList = g.jaillet_lu_list();
+        vector<vector<pair<int, double>>> brubachSSXH = g.brubach_et_al_h(typeProb);
+        
 
         vector<int> blueF, redF;
         tie(blueF, redF) = g.feldman_et_al_color();
@@ -194,10 +194,12 @@ void work_from_file(string name)
             poissonOCS.add_run(match_size(g.poisson_ocs(offMass, typeProb)));
             topHalf.add_run(match_size(g.top_half_sampling(typeProb)));
             minDegree.add_run(match_size(g.min_degree()));
-            jailletLu.add_run(match_size(g.jaillet_lu(jlList)));
-            manshadiGS.add_run(match_size(g.manshadi_et_al(typeProb)));
+            
             feldmanMMM.add_run(match_size(g.feldman_et_al(blueF, redF)));
             BahmaniKapralov.add_run(match_size(g.bahmani_kapralov(blueB, redB)));
+            manshadiGS.add_run(match_size(g.manshadi_et_al(typeProb)));
+            jailletLu.add_run(match_size(g.jaillet_lu(jlList)));
+            brubachSSX.add_run(match_size(g.brubach_et_al(brubachSSXH)));
         }
 
         double opt = compute_mean_std(OPT.resRun).first;
@@ -217,7 +219,7 @@ int main()
     for (auto item : file_name)
         work_from_file(item.first);
     
-    write_to_files("real_world_result");
+    save_results_to_files("real_world_result");
     
     return 0;
 }

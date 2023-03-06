@@ -1,49 +1,196 @@
 struct cycle_break_graph{
     
-    vector<map<int, int>> val;
+    vector<map<int, double>> vFrac;
+    vector<map<int, int>> vInt;
 
     int size;
+    int onSize;
 
-    cycle_break_graph(int n)
+    cycle_break_graph(int n, int m)
     {
-        size = n;
+        onSize = n, size = m;
         
-        val.resize(size);
+        vFrac.resize(size);
+        vInt.resize(size);
+        
         for (int i = 0; i < size; i++)
-            val[i] = {};
+        {
+            vFrac[i] = {};
+            vInt[i] = {};
+        }
     }
     
-    void add_edge(int x, int y, int z)
+    void add_edge(int x, int y, double z)
     {
-        val[x][y] = z;
+        vFrac[x][y] = z;
+        vFrac[y][x] = z;
     }
+    
+    bool is_fractional(double z){
+        return abs(z - floor(z + 0.5)) > 1e-10;
+    }
+    
+    void frac_to_int()
+    {
+        for (int i = 0; i < size; i++)
+            for (auto e : vFrac[i])
+                if (e.second > 1e-10)
+                {
+                    int j = e.first; double x = e.second;
+                    vInt[i][j] = (int)floor(x + 0.5);
+                }
+    }
+    
+    //do Gandhi et. al's dependent rounding
+    
+    vector<int> find_fractional_cycle_or_path()
+    {
+        int start = -1;
+        for (int i = 0; i < size; i++)
+        {
+            int num_frac = 0;
+            for (auto e : vFrac[i])
+                if (is_fractional(e.second))
+                    num_frac++;
+            
+            if (num_frac >= 1)
+                start = i;
+            if (num_frac == 1)
+                break;
+        }
+    
+        if (start == -1) return {};
+        
+        vector<int> visit(size, 0);
+        
+        vector<int> vList(1, start);
+        visit[start] = 1;
+        int cur = start, pre = -1;
+        
+        
+        bool flag;
+        do
+        {
+            flag = false;
+            for (auto e : vFrac[cur])
+                if (e.first != pre && (is_fractional(e.second)))
+                {
+                    int next = e.first;
+                    if (!visit[next])
+                    {
+                        visit[next] = 1;
+                        vList.push_back(next);
+                        pre = cur, cur = next;
+                        flag = true;
+                        break;
+                    }
+                    else
+                    {
+                        vList.push_back(next);
+                        while (*vList.begin() != next)
+                            vList.erase(vList.begin());
+                        break;
+                    }
+                }
+        }
+        while(flag);
+        
+        return vList;
+    }
+    
+    void gandhi_et_al_rounding()
+    {
+        do
+        {
+            vector<int> vList = find_fractional_cycle_or_path();
+            
+            if (vList.empty())
+                break;
+            
+            double alpha = 1, beta = 1;
+            
+            for (int i = 0; i < vList.size() - 1; i++)
+            {
+                int x = vList[i], y = vList[i + 1];
+                double e = vFrac[x][y];
+                if (i % 2 == 0)
+                {
+                    alpha = min(alpha, ceil(e) - e);
+                    beta = min(beta, e - floor(e));
+                }
+                else
+                {
+                    alpha = min(alpha, e - floor(e));
+                    beta = min(beta, ceil(e) - e);
+                }
+            }
+            
+            uniform_real_distribution<double> cur_rand(0.0, alpha + beta);
+            if (cur_rand(rng) < beta)
+                for (int i = 0; i < vList.size() - 1; i++)
+                {
+                    int x = vList[i], y = vList[i + 1];
+                    if (i % 2 == 0)
+                    {
+                        vFrac[x][y] += alpha;
+                        vFrac[y][x] += alpha;
+                    }
+                    else
+                    {
+                        vFrac[x][y] -= alpha;
+                        vFrac[y][x] -= alpha;
+                    }
+                }
+            else
+                for (int i = 0; i < vList.size() - 1; i++)
+                {
+                    int x = vList[i], y = vList[i + 1];
+                    double e = vFrac[x][y];
+                    if (i % 2 == 0)
+                    {
+                        vFrac[x][y] -= beta;
+                        vFrac[y][x] -= beta;
+                    }
+                    else
+                    {
+                        vFrac[x][y] += beta;
+                        vFrac[y][x] += beta;
+                    }
+                }
+            
+        } while(true);
+    }
+    
+    
+    
+    //Breaking cycles of type C2 and C3
     
     inline int cycle_type(int u1, int u2, int v1, int v2)
     {
-        return 7 - val[u1][v1] - val[u1][v2] - val[u2][v1] - val[u2][v2];
+        return 7 - vInt[u1][v1] - vInt[u1][v2] - vInt[u2][v1] - vInt[u2][v2];
     }
     
     void break_one_cycle(int u1, int u2, int v1, int v2)
     {
-        if (val[u1][v1] + val[u1][v2] < val[u2][v1] + val[u2][v2])
+        if (vInt[u1][v1] + vInt[u1][v2] < vInt[u2][v1] + vInt[u2][v2])
             swap(u1, u2);
         
-        if (val[u1][v1] < val[u1][v2])
+        if (vInt[u1][v1] < vInt[u1][v2])
             swap(v1, v2);
         
         if (cycle_type(u1, u2, v1, v2) == 2)    //Type C2
         {
-            val[u1][v1] = 1;
-            val[u1][v2] = 2;
-            val[u2][v1] = 1;
-            val[u2].erase(val[u2].find(v2));
+            vInt[u1][v1] = 1;
+            vInt[u1][v2] = 2;
+            vInt[u2][v1] = 1;
+            vInt[u2].erase(vInt[u2].find(v2));
         }
         else                                    //Type C3
         {
-            val[u1][v1] = 2;
-            val[u1].erase(val[u1].find(v2));
-            val[u2].erase(val[u2].find(v1));
-            val[u2][v2] = 2;
+            vInt[u1][v1] = 2;
+            vInt[u1].erase(vInt[u1].find(v2));
+            vInt[u2].erase(vInt[u2].find(v1));
+            vInt[u2][v2] = 2;
         }
     }
     
@@ -53,8 +200,8 @@ struct cycle_break_graph{
         
         int flag = 0;
         
-        for (int u1 = 0; u1 < size; u1 ++)
-            for (auto e1 : val[u1]) for (auto e2 : val[u1])
+        for (int u1 = 0; u1 < onSize; u1 ++)
+            for (auto e1 : vInt[u1]) for (auto e2 : vInt[u1])
             {
                 int v1 = e1.first, v2 = e2.first; 
                 if (v1 < v2)
@@ -86,8 +233,8 @@ struct cycle_break_graph{
     {
         int u1, u2, v1, v2;
         while (detect_cycle(u1, u2, v1, v2))
-        {
             break_one_cycle(u1, u2, v1, v2);
-        }
     }
+    
+
 };

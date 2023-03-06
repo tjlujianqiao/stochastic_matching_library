@@ -91,7 +91,7 @@ struct flow_graph{
         cur.resize(t + 1);
         while (bfs()) {
             fill(cur.begin(), cur.end(), 0);
-            while (int d = dfs(s, inf));
+            while (dfs(s, inf));
         }
     }
     

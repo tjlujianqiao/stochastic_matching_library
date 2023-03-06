@@ -4,13 +4,12 @@ vector<int> graph::poisson_ocs(const vector<double> &offMass, map<pair<int, int>
     vector<bool> matched(onSize + offSize, false);
      for (int i = 0; i < realSize; i++)
     {
-        double totalMass = 0.0,  mass,mass1;
+        double totalMass = 0.0, mass;
         vector<pair<int, double>> validMass;
         int index = -1;
         for (int j : adj[types[i]])
         {
             mass = exp((1.0 * i / types.size()) * offMass[j]) * typeProb[make_pair(types[i], j)];
-            mass1 = typeProb[make_pair(types[i],j)];
             if (not matched[j] and mass > 0.0)
             {
                 totalMass += mass;
