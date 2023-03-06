@@ -85,7 +85,8 @@ public:
     vector<vector<int>> jaillet_lu_list();
     vector<int> jaillet_lu(vector<vector<int>> &jlList);
     
-    vector<vector<pair<int, double>>> brubach_et_al_h(map<pair<int, int>, double> lpSol);
+    map<pair<int, int>, double> brubach_et_al_lp();
+    vector<vector<pair<int, double>>> brubach_et_al_h(map<pair<int, int>, double> &lpSol);
     vector<int> brubach_et_al(vector<vector<pair<int, double>>> h);
 
     vector<int> min_degree();

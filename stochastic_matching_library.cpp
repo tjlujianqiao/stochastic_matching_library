@@ -7,6 +7,7 @@
 #include <string>
 #include <algorithm>
 #include <cstdio>
+#include "glpk.h"
 
 using namespace std;
 mt19937 rng(random_device{}());
@@ -21,7 +22,7 @@ mt19937 rng(random_device{}());
 int match_size(const vector<int> &res)
 {
     int match = 0;
-    for (int i = 0; i < res.size(); i++)
+    for (int i = 0; i < (int)res.size(); i++)
         if (res[i] != -1)
             match++;
     return match;
@@ -74,7 +75,7 @@ struct resAlg
     {
         if (resSample.size() == 1)
         {
-            resGraph.push_back(resGraph[0]);
+            resGraph.push_back(resSample[0]);
             resSample.clear();
             return;
         }
@@ -159,8 +160,8 @@ void work_from_file(string name)
 {
     cout << "Working on file " << name << endl;
 
-    int numGraph = 10;
-    int numSample = 100;
+    int numGraph = 1;
+    int numSample = 1000;
 
     cout << "Rep";
     for (int i = 1; i <= numGraph; i++)
@@ -170,10 +171,10 @@ void work_from_file(string name)
 
         // Preprocessing
         int realSize = g.online_size();
+        
         map<pair<int, int>, double> typeProb = g.optimal_matching_prob(numSample, realSize);
+        
         vector<double> offMass = g.poisson_offline_mass(typeProb);
-        vector<vector<int>> jlList = g.jaillet_lu_list();
-        vector<vector<pair<int, double>>> brubachSSXH = g.brubach_et_al_h(typeProb);
         
 
         vector<int> blueF, redF;
@@ -181,6 +182,12 @@ void work_from_file(string name)
 
         vector<int> blueB, redB;
         tie(blueB, redB) = g.bahmani_kapralov_color();
+        
+        
+        vector<vector<int>> jlList = g.jaillet_lu_list();
+        
+        map<pair<int, int>, double> brubachLp = g.brubach_et_al_lp();
+        vector<vector<pair<int, double>>> brubachSSXH = g.brubach_et_al_h(brubachLp);
 
         for (int j = 0; j < numSample; j++)
         {

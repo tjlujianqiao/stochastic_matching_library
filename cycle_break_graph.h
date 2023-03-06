@@ -109,7 +109,7 @@ struct cycle_break_graph{
             
             double alpha = 1, beta = 1;
             
-            for (int i = 0; i < vList.size() - 1; i++)
+            for (int i = 0; i < (int)vList.size() - 1; i++)
             {
                 int x = vList[i], y = vList[i + 1];
                 double e = vFrac[x][y];
@@ -125,9 +125,10 @@ struct cycle_break_graph{
                 }
             }
             
-            uniform_real_distribution<double> cur_rand(0.0, alpha + beta);
-            if (cur_rand(rng) < beta)
-                for (int i = 0; i < vList.size() - 1; i++)
+            uniform_real_distribution<double> curRand(0.0, alpha + beta);
+            
+            if (curRand(rng) < beta)
+                for (int i = 0; i < (int)vList.size() - 1; i++)
                 {
                     int x = vList[i], y = vList[i + 1];
                     if (i % 2 == 0)
@@ -142,10 +143,9 @@ struct cycle_break_graph{
                     }
                 }
             else
-                for (int i = 0; i < vList.size() - 1; i++)
+                for (int i = 0; i < (int)vList.size() - 1; i++)
                 {
                     int x = vList[i], y = vList[i + 1];
-                    double e = vFrac[x][y];
                     if (i % 2 == 0)
                     {
                         vFrac[x][y] -= beta;
@@ -180,17 +180,20 @@ struct cycle_break_graph{
         
         if (cycle_type(u1, u2, v1, v2) == 2)    //Type C2
         {
-            vInt[u1][v1] = 1;
-            vInt[u1][v2] = 2;
-            vInt[u2][v1] = 1;
+            vInt[u1][v1] = vInt[v1][u1] = 1;
+            vInt[u1][v2] = vInt[v2][u1] = 2;
+            vInt[u2][v1] = vInt[v1][u2] = 1;
             vInt[u2].erase(vInt[u2].find(v2));
+            vInt[v2].erase(vInt[v2].find(u2));
         }
         else                                    //Type C3
         {
-            vInt[u1][v1] = 2;
+            vInt[u1][v1] = vInt[v1][u1] = 2;
             vInt[u1].erase(vInt[u1].find(v2));
+            vInt[v2].erase(vInt[v2].find(u1));
             vInt[u2].erase(vInt[u2].find(v1));
-            vInt[u2][v2] = 2;
+            vInt[v1].erase(vInt[v1].find(u2));
+            vInt[u2][v2] = vInt[v2][u2] = 2;
         }
     }
     

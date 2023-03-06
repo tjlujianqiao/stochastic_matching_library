@@ -25,7 +25,7 @@ vector<int> graph::manshadi_et_al(map<pair<int, int>, double> &typeProb)
             Prob[i].push_back(make_pair(1.1 - total, -1));
 
         total = 0.0;
-        for (int j = 0; j < Prob[i].size(); j++)
+        for (int j = 0; j < (int)Prob[i].size(); j++)
         {
             total += Prob[i][j].first;
             Prob[i][j].first = total;

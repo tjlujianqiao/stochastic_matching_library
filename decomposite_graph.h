@@ -80,7 +80,7 @@ struct decomposite_graph{
                 }
                 while(flag);
                 
-                for (int j = 0; j < vList.size() - 1; j++)
+                for (int j = 0; j < (int)vList.size() - 1; j++)
                 {
                     int x = vList[j], y = vList[j + 1];
                     

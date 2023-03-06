@@ -48,7 +48,7 @@ struct flow_graph{
         {
             int u = q.front();
             q.pop();
-            for (int u_e = 0; u_e < adj[u].size(); u_e++){
+            for (int u_e = 0; u_e < (int)adj[u].size(); u_e++){
                 int v = adj[u][u_e].v;
                 if (!dep[v] && adj[u][u_e].cap){
                     dep[v] = dep[u] + 1;
@@ -64,7 +64,7 @@ struct flow_graph{
     int dfs(int u, int num)
     {
         if ( (u == t) || !num ) return num;
-        for (int &u_e = cur[u]; u_e < adj[u].size(); u_e++)
+        for (int &u_e = cur[u]; u_e < (int)adj[u].size(); u_e++)
         {
             int v = adj[u][u_e].v, v_e = adj[u][u_e].rev;
             if ((dep[v] == dep[u] + 1) && adj[u][u_e].cap)
@@ -109,7 +109,7 @@ struct flow_graph{
             int u = Q.front();
             Q.pop();
             
-            for (int u_e = 0; u_e < adj[u].size(); u_e++){
+            for (int u_e = 0; u_e < (int)adj[u].size(); u_e++){
                 int v = adj[u][u_e].v;
                 if (!inS[v] && adj[u][u_e].cap){
                     inS[v] = 1;
