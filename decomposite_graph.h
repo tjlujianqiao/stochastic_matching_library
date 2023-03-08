@@ -1,13 +1,20 @@
-//Compute maximum flow by Dinic's algorithm
-//Assume t is the vertex with largest label 
+//Input: A graph with only paths and cycles
+//Decomposite into blue and red edges in Feldman et al. (2009) and Bahmani and Kapralov (2010)
+
 
 struct decomposite_graph{
     
+    // Color of each edge
     vector<map<int, int>> color;
 
+    // Total number of vertices 
     int size;
+    
+    // Number of online types
     int onSize;
 
+    // Construct an empty type graph with:
+    // n vertices in total, and m online types 
     decomposite_graph(int n, int m)
     {
         size = n;
@@ -18,11 +25,13 @@ struct decomposite_graph{
             color[i] = {};
     }
     
+    // Add an edge (x, y)
     void add_edge(int x, int y)
     {
         color[x][y] = color[y][x] = -1;
     }
     
+    // Assign colors for each edge
     void set_color()
     {
         vector<int> visit(size, 0);
@@ -30,6 +39,7 @@ struct decomposite_graph{
         for (int i = 0; i < size; i++)
             if (visit[i] < 2)
             {
+                // Start from any vertex to find the end of a path (or a cycle)
                 int cur = i, pre = -1, flag;
                 visit[i] = 1;
                 do
@@ -49,6 +59,8 @@ struct decomposite_graph{
                         }
                 }while (flag);
                 
+                
+                // Start from one end of a path (or a cycle) to find the other end
                 int start = cur;
                 vector<int> vList(1, start);
                 visit[start] = 2;
@@ -84,13 +96,13 @@ struct decomposite_graph{
                 {
                     int x = vList[j], y = vList[j + 1];
                     
-                    if (isCycle) //Cycle
+                    if (isCycle)                    //Cycle
                         if (j % 2 == 0) color[x][y] = color[y][x] = 1; else color[x][y] = color[y][x] = 2;
                     else if (vList.size() % 2 == 0) //Odd-length paths
                         if (j % 2 == 0) color[x][y] = color[y][x] = 1; else color[x][y] = color[y][x] = 2;
-                    else if (vList[0] >= onSize) //Even-length paths starting from an offline vertex
+                    else if (vList[0] >= onSize)    //Even-length paths starting from an offline vertex
                         if (j % 2 == 0) color[x][y] = color[y][x] = 1; else color[x][y] = color[y][x] = 2;
-                    else                         //Even-length paths starting from an online vertex
+                    else                            //Even-length paths starting from an online vertex
                         if (j % 2 == 1 || j == 0) color[x][y] = color[y][x] = 1; else color[x][y] = color[y][x] = 2;
                 }
             }

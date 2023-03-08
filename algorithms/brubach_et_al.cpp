@@ -1,3 +1,6 @@
+// Compute LP in Brubach et al. (2016)
+// Reference: Borodin et al. , An Experimental Study of Algorithms for Online Bipartite Matching. (2019)
+
 map<pair<int, int>, double> graph::brubach_et_al_lp()
 {
     vector<int> ia, ja;
@@ -13,14 +16,10 @@ map<pair<int, int>, double> graph::brubach_et_al_lp()
 
     glp_term_out(GLP_OFF);
 
-    //cerr << "************ SET ROW BOUNDS" << endl;
-
     int nrows = onSize + offSize;
     glp_add_rows(lp, nrows);
     for (int i = 0; i < nrows; i++)
         glp_set_row_bnds(lp, i + 1, GLP_UP, 0.0, 1.0);
-
-    //cerr << "************ SET COLUMN BOUNDS (1-1/e) AND OBJECTIVE" << endl;
 
     int ncols = 0;
     for (int i = 0; i < onSize; i++)
@@ -32,8 +31,6 @@ map<pair<int, int>, double> graph::brubach_et_al_lp()
         glp_set_col_bnds(lp, i + 1, GLP_DB, 0.0, 1.0 - 1.0 / exp(1.0));
         glp_set_obj_coef(lp, i + 1, 1.0);
     }
-
-    //cerr << "************ SET UP ADJACENCY MATRIX CONSTRAINTS" << endl;
 
     int var = 1;
     for (int i = 0; i < onSize; i++) {
@@ -51,8 +48,6 @@ map<pair<int, int>, double> graph::brubach_et_al_lp()
             var++;
         }
     }
-
-    //cerr << "***************** SET UP 1-1/e^2 CONSTRAINTS" << endl;
 
     int currow = nrows;
     for (int j = onSize; j < (int)onSize + offSize; j++) {
@@ -76,16 +71,10 @@ map<pair<int, int>, double> graph::brubach_et_al_lp()
         }
     }
 
-    //cerr << "************ LOAD MATRIX OF CONSTRAINTS" << endl;
-
     glp_load_matrix(lp, (int)ia.size() - 1, &ia[0], &ja[0], &ea[0]);
 
-    //cerr << "************ RUN SIMPLEX" << endl;
-    
     glp_simplex(lp, NULL);
 
-    //cerr << "************ DONE" << endl;
-    
     map<pair<int, int>, double> res;
 
     for (int i = 1; i <= ncols; i++) {
@@ -98,7 +87,7 @@ map<pair<int, int>, double> graph::brubach_et_al_lp()
     return res;
 }
 
-
+// Compute H' in Brubach et al. (2016)
 vector<vector<pair<int, double>>> graph::brubach_et_al_h(map<pair<int, int>, double> &lpSol)
 {
     cycle_break_graph gCycle(onSize, onSize + offSize);
@@ -208,7 +197,7 @@ vector<vector<pair<int, double>>> graph::brubach_et_al_h(map<pair<int, int>, dou
     return res;
 }
 
-
+// Match online vertices with weight H'
 vector<int> graph::brubach_et_al(vector<vector<pair<int, double>>> h)
 {
     vector<int> res(realSize, -1);

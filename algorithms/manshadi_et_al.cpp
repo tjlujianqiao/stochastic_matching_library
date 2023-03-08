@@ -1,3 +1,4 @@
+// Match with the sampled matching probability of each edge
 vector<int> graph::manshadi_et_al(map<pair<int, int>, double> &typeProb)
 {
     vector<int> res(realSize, -1);

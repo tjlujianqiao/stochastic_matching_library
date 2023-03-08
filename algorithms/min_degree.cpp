@@ -1,3 +1,4 @@
+// Match by min-degree algorithm
 vector<int> graph::min_degree()
 {
     vector<int> res(realSize, -1);

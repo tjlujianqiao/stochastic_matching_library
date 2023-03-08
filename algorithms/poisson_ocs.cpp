@@ -1,3 +1,4 @@
+// Match with offline mass and weight x_{ij} for each edge
 vector<int> graph::poisson_ocs(const vector<double> &offMass, map<pair<int, int>, double> &typeProb)
 {
     vector<int> res(realSize, -1);
@@ -38,6 +39,8 @@ vector<int> graph::poisson_ocs(const vector<double> &offMass, map<pair<int, int>
     }
     return res;
 }
+
+// Compute mass of each offline vertex
 vector<double> graph::poisson_offline_mass(map<pair<int, int>, double> &typeProb)
 {
     vector<double> offMass = {};

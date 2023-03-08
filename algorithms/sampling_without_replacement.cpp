@@ -1,3 +1,4 @@
+// Match by sampling without replacement
 vector<int> graph::sampling_without_replacement(map<pair<int, int>, double> &typeProb)
 {
     vector<int> res(realSize, -1);
@@ -42,8 +43,8 @@ vector<int> graph::sampling_without_replacement(map<pair<int, int>, double> &typ
 }
 
 
-
-
+// Compute the probability of each edge in optimal matching by Monte-Carlo with:
+// Number of samples, and online vertices in realization graph
 map<pair<int, int>, double> graph::optimal_matching_prob(int numSample, int realSize)
 {
     uniform_int_distribution<int> uni(0, onSize - 1);
@@ -56,9 +57,12 @@ map<pair<int, int>, double> graph::optimal_matching_prob(int numSample, int real
         for (int i = 0; i < realSize; i++)
         {
             if (res[i] != -1)
+            {
                 Prob[make_pair(types[i], res[i])] += 1.0 / numSample;
+            }
         }
     }
+    
     return Prob;
 }
 

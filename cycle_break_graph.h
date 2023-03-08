@@ -1,11 +1,20 @@
+// Perform cycle break for type graph in Jaillet and Lu (2013) and Brubach et al. (2016)
+
 struct cycle_break_graph{
     
+    // Fractional value of each edge
     vector<map<int, double>> vFrac;
+    
+    // Rounded value of each edge
     vector<map<int, int>> vInt;
 
+    // Total number of vertices
     int size;
+    // Number of online types
     int onSize;
 
+    // Construct an empty type graph with:
+    // n online types and m offline vertices
     cycle_break_graph(int n, int m)
     {
         onSize = n, size = m;
@@ -20,16 +29,19 @@ struct cycle_break_graph{
         }
     }
     
+    // Add an edge (x, y) with value z
     void add_edge(int x, int y, double z)
     {
         vFrac[x][y] = z;
         vFrac[y][x] = z;
     }
     
+    // Decide whether the number is fractional
     bool is_fractional(double z){
         return abs(z - floor(z + 0.5)) > 1e-10;
     }
     
+    // Rounding all fractional values to integrals
     void frac_to_int()
     {
         for (int i = 0; i < size; i++)
@@ -41,8 +53,7 @@ struct cycle_break_graph{
                 }
     }
     
-    //do Gandhi et. al's dependent rounding
-    
+    // Find a cycle or maximal path with all edges fractional
     vector<int> find_fractional_cycle_or_path()
     {
         int start = -1;
@@ -98,6 +109,7 @@ struct cycle_break_graph{
         return vList;
     }
     
+    // Apply Gandhi et. al (2006)'s dependent rounding
     void gandhi_et_al_rounding()
     {
         do
@@ -161,15 +173,13 @@ struct cycle_break_graph{
         } while(true);
     }
     
-    
-    
-    //Breaking cycles of type C2 and C3
-    
+    //Decide a cycle's type
     inline int cycle_type(int u1, int u2, int v1, int v2)
     {
         return 7 - vInt[u1][v1] - vInt[u1][v2] - vInt[u2][v1] - vInt[u2][v2];
     }
     
+    //Break a cycle
     void break_one_cycle(int u1, int u2, int v1, int v2)
     {
         if (vInt[u1][v1] + vInt[u1][v2] < vInt[u2][v1] + vInt[u2][v2])
@@ -197,6 +207,7 @@ struct cycle_break_graph{
         }
     }
     
+    //Detect cycles of type C2 and C3
     int detect_cycle(int &U1, int &U2, int &V1, int &V2)
     {
         map<pair<int, int>, vector<int>> M = {};
@@ -232,6 +243,7 @@ struct cycle_break_graph{
         return flag;
     }
     
+    // Break all cycles of type C2 and C3
     void cycle_break()
     {
         int u1, u2, v1, v2;

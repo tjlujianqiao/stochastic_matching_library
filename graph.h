@@ -4,7 +4,7 @@ class graph
 {
 
 public:
-    // Construct an empty graph with n online types and m offline vertices
+    // Construct an empty type graph with n online types and m offline vertices
     graph(int n, int m)
     {
         onSize = n;
@@ -25,6 +25,13 @@ public:
         adj[j].push_back(i);
     }
     
+    // Return adjacency list
+    vector<vector<int>> get_adj()
+    {
+        return adj;
+    }
+    
+    // Return number of online types
     int online_size()
     {
         return onSize;
@@ -43,7 +50,8 @@ public:
         cout << "Finished" << endl;
     }
     
-    //Randomly construct a realization graph with n online vertices
+    // Randomly construct a realization graph with:
+    // n online vertices, in the experiment supposed to be equal to number of online types
     void realize(int n)
     {
         realSize = n;
@@ -53,7 +61,7 @@ public:
             types[i] = typeDist(rng);
     }
     
-    //Randomly construct a realization graph with n online vertices
+    //Print the type of each online vertex
     void print_type()
     {
         cout << "Type list:";
@@ -68,48 +76,50 @@ public:
     
     vector<int> sampling_without_replacement(map<pair<int, int>, double> &typeProb);
     map<pair<int, int>, double> optimal_matching_prob(int n_samples, int onSizeSample);
+    
+    vector<int> balance_swr();
+    vector<int> balance_ocs();
 
     vector<int> poisson_ocs(const vector<double> &offMass, map<pair<int, int>, double> &typeProb);
     vector<double> poisson_offline_mass(map<pair<int, int>, double> &typeProb);
 
     vector<int> top_half_sampling(map<pair<int, int>, double> &typeProb);
     
-    pair<vector<int>, vector<int>> feldman_et_al_color();
-    vector<int> feldman_et_al(vector<int> &blue, vector<int> &red);
+    map<pair<int, int>, double> brubach_et_al_lp();
+    vector<vector<pair<int, double>>> brubach_et_al_h(map<pair<int, int>, double> &lpSol);
+    vector<int> brubach_et_al(vector<vector<pair<int, double>>> h);
+    
+    vector<vector<int>> jaillet_lu_list();
+    vector<int> jaillet_lu(vector<vector<int>> &jlList);
+    
+    vector<int> manshadi_et_al(map<pair<int, int>, double> &typeProb);
     
     pair<vector<int>, vector<int>> bahmani_kapralov_color();
     vector<int> bahmani_kapralov(vector<int> &blue, vector<int> &red);
     
-    vector<int> manshadi_et_al(map<pair<int, int>, double> &typeProb);
-
-    vector<vector<int>> jaillet_lu_list();
-    vector<int> jaillet_lu(vector<vector<int>> &jlList);
+    pair<vector<int>, vector<int>> feldman_et_al_color();
+    vector<int> feldman_et_al(vector<int> &blue, vector<int> &red);
     
-    map<pair<int, int>, double> brubach_et_al_lp();
-    vector<vector<pair<int, double>>> brubach_et_al_h(map<pair<int, int>, double> &lpSol);
-    vector<int> brubach_et_al(vector<vector<pair<int, double>>> h);
-
     vector<int> min_degree();
 
     vector<int> ranking();
 
-    vector<int> balance_swr();
-    vector<int> balance_ocs();
     
 private:
+
     // Adjacency list representation
     vector<vector<int>> adj;
     
     // Type of each online vertex in realization graph
     vector<int> types;
     
-    // Number of online type
+    // Number of online types
     int onSize;
 
     // Number of offline vertices
     int offSize;
     
-    // Number of online vertices
+    // Number of online vertices, in this experiment supposed to be equal to onSize
     int realSize;
     
 };

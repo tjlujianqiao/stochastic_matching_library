@@ -1,3 +1,4 @@
+// Apply balance to obtain weight of each offline vertex
 double fill_water(vector<double> &level, const double water)
 {
     double l = 0, r = water, eps = 1e-8;
@@ -15,6 +16,8 @@ double fill_water(vector<double> &level, const double water)
     return (l + r) / 2;
 }
 
+// Match by sampling without replacement
+// with weight computed by balance
 vector<int> graph::balance_swr()
 {
     vector<double> currentLevel(onSize + offSize, 0);
@@ -65,6 +68,8 @@ vector<int> graph::balance_swr()
     return res;
 }
 
+// Match by OCS, Huang et al. (2020)
+// with weight computed by balance
 vector<int> graph::balance_ocs()
 {
     vector<double> currentLevel(onSize + offSize, 0);

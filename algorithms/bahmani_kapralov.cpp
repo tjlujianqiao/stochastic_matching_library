@@ -1,3 +1,4 @@
+// Compute edge colors in Bahmani and Kapralov (2010)
 pair<vector<int>, vector<int>> graph::bahmani_kapralov_color()
 {
     vector<int> blue(onSize, -1);
@@ -23,6 +24,7 @@ pair<vector<int>, vector<int>> graph::bahmani_kapralov_color()
     
     decomposite_graph gDecom(onSize + offSize, onSize);
             
+    //Build graph Gs and Gt
     flow_graph gS(s, t);
     flow_graph gT(s, t);
     for (int i = 0; i < onSize; i++)
@@ -104,8 +106,7 @@ pair<vector<int>, vector<int>> graph::bahmani_kapralov_color()
     return make_pair(blue, red);
 }
 
-
-
+// Match online vertices with advice of blue and red edges
 vector<int> graph::bahmani_kapralov(vector<int> &blue, vector<int> &red)
 {
     vector<int> res(realSize, -1);

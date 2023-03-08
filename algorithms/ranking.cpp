@@ -1,3 +1,4 @@
+// Match by RANKING algorithm
 vector<int> graph::ranking()
 {
     vector<int> rank(onSize + offSize, 0);

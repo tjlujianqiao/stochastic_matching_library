@@ -1,3 +1,4 @@
+// Compute edge colors in Feldman et al. (2009)
 pair<vector<int>, vector<int>> graph::feldman_et_al_color()
 {
     vector<int> blue(onSize, -1);
@@ -39,7 +40,7 @@ pair<vector<int>, vector<int>> graph::feldman_et_al_color()
 }
 
 
-
+// Match online vertices with advice of blue and red edges
 vector<int> graph::feldman_et_al(vector<int> &blue, vector<int> &red)
 {
     vector<int> res(realSize, -1);

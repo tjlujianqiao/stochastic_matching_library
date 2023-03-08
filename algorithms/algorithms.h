@@ -1,3 +1,5 @@
+// Include all algorithms implemented
+
 #include "balance.cpp"
 #include "bahmani_kapralov.cpp"
 #include "brubach_et_al.cpp"

@@ -1,3 +1,4 @@
+// Compute lists in Jaillet and Lu (2013)
 vector<vector<int>> graph::jaillet_lu_list()
 {
     int s = onSize + offSize, t = s + 1;
@@ -21,6 +22,7 @@ vector<vector<int>> graph::jaillet_lu_list()
             if (e.flow > 0)
                 gCycle.add_edge(i, e.v, e.flow);
             
+    // Break cycles of type C2 and C3 required for theoretical guarantee
     gCycle.frac_to_int();
     gCycle.cycle_break();
 
@@ -34,7 +36,7 @@ vector<vector<int>> graph::jaillet_lu_list()
 }
 
 
-
+// Match with list of each online types
 vector<int> graph::jaillet_lu(vector<vector<int>> &jlList)
 {
     vector<int> res(realSize, -1);

@@ -1,28 +1,29 @@
-//Compute maximum flow by Dinic's algorithm
-//Assume t is the vertex with largest label 
+// Flow graph stored in adjacency list representation
+
 
 struct flow_graph{
     
+    // Edge u -> v with capacity and flow
+    // rev helps find the reversed edge v -> u
     struct edge
     {
         int v, cap, flow, rev;
         edge(int v, int cap, int flow, int rev) : v(v), cap(cap), flow(flow), rev(rev){}
     };
     
-
-    
+    // Graph stored by adjacency lists
     vector<vector<edge>> adj;
-    
     
     vector<int> dep, cur;
     
-    
+    // Source and Sink
     int s, t;
     
     const int inf = 1e9;
     
     
-
+    // Initialize flow graph with source S and sink T
+    // NOTE: Assume T is the vertex with largest label 
     flow_graph(int S, int T)
     {
         s = S, t = T;
@@ -31,6 +32,7 @@ struct flow_graph{
             adj[i] = {};
     }
 
+    // Add an edge x -> y with capacity
     void add_edge(int x, int y, int cap)
     {
         int x_e = adj[x].size(), y_e = adj[y].size();
@@ -38,6 +40,7 @@ struct flow_graph{
         adj[y].push_back(edge(x, 0, 0, x_e));
     }
 
+    // Assign levels to vertices by BFS
     bool bfs()
     {
         queue<int> q;
@@ -61,6 +64,7 @@ struct flow_graph{
         return dep[t];
     }
     
+    // Send flows in G by DFS in level graph 
     int dfs(int u, int num)
     {
         if ( (u == t) || !num ) return num;
@@ -83,8 +87,7 @@ struct flow_graph{
         return 0;
     }
     
-    
-    
+    // Compute maximum flow by Dinic's algorithm
     void max_flow()
     {
         dep.resize(t + 1);
@@ -96,7 +99,8 @@ struct flow_graph{
     }
     
     
-    
+    // Compute the (canonical) reachability min-cut from residual graph
+    // Must call maxflow() before calling this
     vector<int> min_cut()
     {
         vector<int> inS(t + 1, 0);

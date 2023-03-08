@@ -1,3 +1,4 @@
+// Compute offline optimal matching in realization graph
 vector<int> graph::maximum_matching()
 {
     int s = realSize + offSize, t = s + 1;
