@@ -140,16 +140,7 @@ vector<resAlg*> resPointer = {
     &feldmanMMM
 };
 
-// Path and name of real-world datasets
-vector<pair<string, string>> file_name = 
-{
-    make_pair("real_world/socfb-Caltech36/socfb-Caltech36.txt", "Caltech36"),
-    make_pair("real_world/socfb-Reed98/socfb-Reed98.txt", "Reed98"),
-    make_pair("real_world/bio-CE-GN/bio-CE-GN.txt", "CE-GN"),
-    make_pair("real_world/bio-CE-PG/bio-CE-PG.txt", "CE-PG"),
-    make_pair("real_world/econ-beause/econ-beause.txt", "beause"),
-    make_pair("real_world/econ-mbeaflw/econ-mbeaflw.txt", "mbeaflw")
-};
+vector <string> datasetName;
 
 // Save results to directory
 void save_results_to_files(string directory)
@@ -160,13 +151,13 @@ void save_results_to_files(string directory)
     fileResStd.open(directory + "/" + "resStd.txt");
     
     fileResMean << "Algorithm";
-    for (auto item : file_name)
-        fileResMean << " " << item.second;
+    for (auto item : datasetName)
+        fileResMean << " " << item;
     fileResMean << endl;
     
     fileResStd << "Algorithm";
-    for (auto item : file_name)
-        fileResStd << " " << item.second;
+    for (auto item : datasetName)
+        fileResStd << " " << item;
     fileResStd << endl;
     
     for (auto i : resPointer)
@@ -196,7 +187,7 @@ void work_from_file(string name)
 {
     cout << "Working on file " << name << endl;
 
-    int numGraph = 100;
+    int numGraph = 1;
     int numSample = 1000;
 
     cout << "Rep";
@@ -359,10 +350,28 @@ void work_from_erdos_renyi(int n, double c)
 
 int main()
 {
-    // work_from_erdos_renyi(50, 2);
+    for (double c = 0.1; c < 2; c += 0.2)
+    {
+        
+        work_from_erdos_renyi(50, c);
+        datasetName.push_back("c=" + to_string(c));
+    }
     
+    // Path and name of real-world datasets
+    /*vector<pair<string, string>> file_name = 
+    {
+        make_pair("real_world/socfb-Caltech36/socfb-Caltech36.txt", "Caltech36"),
+        make_pair("real_world/socfb-Reed98/socfb-Reed98.txt", "Reed98"),
+        make_pair("real_world/bio-CE-GN/bio-CE-GN.txt", "CE-GN"),
+        make_pair("real_world/bio-CE-PG/bio-CE-PG.txt", "CE-PG"),
+        make_pair("real_world/econ-beause/econ-beause.txt", "beause"),
+        make_pair("real_world/econ-mbeaflw/econ-mbeaflw.txt", "mbeaflw")
+    };
     for (auto item : file_name)
+    {
         work_from_file(item.first);
+        datasetName.push_back(item.second);
+    }*/
 
     
     save_results_to_files("real_world_result");

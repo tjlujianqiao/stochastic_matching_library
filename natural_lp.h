@@ -62,12 +62,17 @@ public:
         x = x_init;
 
         f_best = get_obj();
-        while (not iterate_ellipsoid())
-            ;
+        while (not iterate_ellipsoid());
+        
+        
         map<pair<int, int>, double> typeProb;
         for (int i = 0; i < onSize; i++)
             for (int j : adjLP[i])
                 typeProb[make_pair(i, j)] = x[eID[make_pair(i, j)]];
+            
+        free(P);
+        free(g_k);
+            
         return typeProb;
     }
 
