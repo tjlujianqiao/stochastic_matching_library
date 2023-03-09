@@ -330,7 +330,11 @@ int main()
     {
         work_from_erdos_renyi(100, c, true);
         datasetName.push_back("c=" + to_string(c));
-    }*/
+    }
+    save_results_to_files("Erdos_Renyi_result");*/
+    
+    
+    
     
     // Path and name of real-world datasets
     vector<pair<string, string>> file_name = 
@@ -347,8 +351,6 @@ int main()
         work_from_file(item.first);
         datasetName.push_back(item.second);
     }
-
-    
     save_results_to_files("real_world_result");
     return 0;
 }
