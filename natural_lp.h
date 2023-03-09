@@ -17,23 +17,6 @@ private:
     vector<double> lambda;
 
 public:
-    void savetofile()
-    {
-        ofstream of;
-        of.open("nan_example.txt");
-        of <<"\% lipu" << endl;
-        of << "\% " << n <<" "<< onSize << endl;
-        for (int i = 0; i < onSize; i++)
-        {
-            for (int j : adjLP[i])
-            {
-                of << i << " " << j  << " " << -1 << endl; 
-            }
-        }
-        of.close();
-        return ;
-        
-    }
     // Initialize
     natural_lp(const vector<vector<int>> &adj, int onsize)
     {
@@ -204,8 +187,6 @@ public:
         stop_value = cal_stop_value();
         sum = get_obj();
         update_ellipsoid(sum, stop_value, false);
-        // printf("sum%f stop_value%f \n", sum, stop_value );
-        // assert(stop_value > -1e-10);
         if (stop_value <= eps)
         {
             return true;
@@ -221,9 +202,6 @@ public:
             for (int j = 1; j < n + 1; j++)
                 stop_value += P[i][j] * g_k[i] * g_k[j];
         
-        if(stop_value < -1e-10) savetofile();
-        assert(stop_value > -1e-10);
-        // cout << stop_value << endl;
         return sqrt(stop_value);
     }
 
@@ -259,9 +237,6 @@ public:
             f_best = min(f_best, get_obj());
             alpha = 1.0 * (sum - f_best) / stop_value;
         }
-        
-
-        
 
         double term1[n + 1];
         fill(term1, term1 + n + 1, 0.0);
@@ -290,8 +265,5 @@ public:
                           (P[i][j] - 2.0 * (1 + n * alpha) / ((n + 1) * (1 + alpha)) * term3[i][j]);
             }
         }
-        // double ss = cal_stop_value();
-        // printf("sum %f, fbest %f ,alpha : %f, stop vale : %f , flag:%d\n", sum, f_best,alpha,ss , flag);
-        // assert(ss > -1e-10);
     }
 };
