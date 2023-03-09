@@ -194,10 +194,8 @@ void work_from_file(string name)
     for (int i = 1; i <= numGraph; i++)
     {
         cout << " " << i;
-        // graph g = generate_from_file(name, false, 100);
-        graph g = generate_from_exact_file(name);
-        g.print( );
-
+        graph g = generate_from_file(name, true, 0);
+        
         // Preprocessing
         int realSize = g.online_size();
         

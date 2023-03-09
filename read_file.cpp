@@ -62,36 +62,3 @@ graph generate_from_file(string path, bool dup = false, int subSample = 0)
         return g;
     }
 }
-
-
-graph generate_from_exact_file(string path)
-{
-    ifstream fin(path);
-
-    // Ignore line 1
-    string line;
-    getline(fin, line);
-
-    // Ignore the first character % in line 2
-    char ch;
-    int n, m;
-    
-    fin >> ch >> m >> n;
-
-    graph g(n, n);
-    for (int i = 0; i < m; i++)
-    {
-        int x, y;
-        fin >> x >> y;
-        
-        // Ignore the third number in line
-        string line;
-        getline(fin, line);
-
-        // Index starts from 1 in input file
-
-        g.add_edge(x, y);
-    }
-    fin.close();
-    return g;
-}
