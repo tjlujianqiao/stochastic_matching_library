@@ -326,7 +326,7 @@ void work_from_erdos_renyi(int n, double c, bool useNatural = false)
 int main()
 {
     // Work on Small Erdos-Renyi type graph
-    /*for (double c = 0.2; c <= 2.0; c += 0.2)
+    /*for (double c : vector<double> {0.1, 0.2, 0.35, 0.5, 0.7, 1, 1.5, 2.3, 3.5, 5})
     {
         work_from_erdos_renyi(100, c, true);
         datasetName.push_back("c=" + to_string(c));
