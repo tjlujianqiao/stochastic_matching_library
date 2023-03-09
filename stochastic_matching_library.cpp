@@ -202,8 +202,8 @@ void work_from_file(string name)
         map<pair<int, int>, double> typeProb  = g.optimal_matching_prob(numSample, realSize);
 
         // Extremely slow to compute natural LP
-        natural_lp lp(g.get_adj(),g.online_size());
-        map<pair<int, int>, double> SWRProb = lp.solve_lp();
+        // natural_lp lp(g.get_adj(),g.online_size());
+        // map<pair<int, int>, double> SWRProb = lp.solve_lp();
         
         //vector<double> offMass = g.poisson_offline_mass(SWRProb);
         vector<double> offMass = g.poisson_offline_mass(typeProb);
@@ -226,7 +226,7 @@ void work_from_file(string name)
             g.realize(realSize);
 
             OPT.add_run(match_size(g.maximum_matching()));
-            SWR.add_run(match_size(g.sampling_without_replacement(SWRProb)));
+            //SWR.add_run(match_size(g.sampling_without_replacement(SWRProb)));
             SWRType.add_run(match_size(g.sampling_without_replacement(typeProb)));
             ranking.add_run(match_size(g.ranking()));
             balanceSWR.add_run(match_size(g.balance_swr()));
@@ -350,14 +350,15 @@ void work_from_erdos_renyi(int n, double c)
 
 int main()
 {
-    for (double c = 0.2; c <= 2.0; c += 0.2)
+    // Work on Small Erdos-Renyi type graph
+    /*for (double c = 0.2; c <= 2.0; c += 0.2)
     {
         work_from_erdos_renyi(100, c);
         datasetName.push_back("c=" + to_string(c));
-    }
+    }*/
     
     // Path and name of real-world datasets
-    /*vector<pair<string, string>> file_name = 
+    vector<pair<string, string>> file_name = 
     {
         make_pair("real_world/socfb-Caltech36/socfb-Caltech36.txt", "Caltech36"),
         make_pair("real_world/socfb-Reed98/socfb-Reed98.txt", "Reed98"),
@@ -370,8 +371,7 @@ int main()
     {
         work_from_file(item.first);
         datasetName.push_back(item.second);
-    }*/
-    // work_from_file("nan_example.txt");
+    }
 
     
     save_results_to_files("real_world_result");
