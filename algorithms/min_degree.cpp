@@ -12,8 +12,10 @@ vector<int> graph::min_degree()
         for (auto j : adj[types[i]])
             if (not matched[j])
                 degree[j]++, unmatchedNeighbors.push_back(make_pair(degree[j], j));
+
         if (unmatchedNeighbors.size())
         {
+            // By default the sort function sorts the vector elements on basis of first element of pairs.
             sort(unmatchedNeighbors.begin(), unmatchedNeighbors.end());
             index = unmatchedNeighbors[0].second;
             matched[index] = true;

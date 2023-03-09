@@ -8,7 +8,6 @@ vector<int> graph::ranking()
     iota(rank.begin(), rank.end(), 0);
     shuffle(rank.begin(), rank.end(), rng);
 
-
     for (int i = 0; i < realSize; i++)
     {
         int match = -1;

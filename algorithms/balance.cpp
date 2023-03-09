@@ -24,12 +24,16 @@ vector<int> graph::balance_swr()
     vector<bool> selected(onSize + offSize, false);
     vector<int> res(realSize, -1);
 
+
+
+
+
     for (int i = 0; i < realSize; i++)
     {
         vector<double> level;
 
         for (int j : adj[types[i]])
-            if (not selected[j] and currentLevel[j] < 1.0)
+            if (not selected[j] )
                 level.push_back(currentLevel[j]);
 
         if (not level.size())
@@ -40,7 +44,7 @@ vector<int> graph::balance_swr()
         double mass = 0, chosen = 0;
         vector<pair<int, double>> validMass;
         for (int j : adj[types[i]])
-            if (not selected[j] and currentLevel[j] < 1.0)
+            if (not selected[j] )
             {
                 mass += max(newLevel - currentLevel[j], 0.0);
             }
@@ -50,7 +54,7 @@ vector<int> graph::balance_swr()
 
         for (int j : adj[types[i]])
         {
-            if (not selected[j] and currentLevel[j] < 1.0)
+            if (not selected[j] )
             {
                 chosen += max(newLevel - currentLevel[j], 0.0);
                 if (chosen >= sample)
@@ -62,7 +66,7 @@ vector<int> graph::balance_swr()
             }
         }
         for (int j : adj[types[i]])
-            if (not selected[j] and currentLevel[j] < 1.0)
+            if (not selected[j] )
                 currentLevel[j] = max(newLevel, currentLevel[j]);
     }
     return res;

@@ -22,6 +22,7 @@ vector<int> graph::manshadi_et_al(map<pair<int, int>, double> &typeProb)
         double total = 0.0;
         for (int j = 0; j < (int)Prob[i].size(); j++)
             total += Prob[i][j].first;
+
         if (total < 1.1)
             Prob[i].push_back(make_pair(1.1 - total, -1));
 
@@ -42,6 +43,7 @@ vector<int> graph::manshadi_et_al(map<pair<int, int>, double> &typeProb)
         r2 = r1 > 0.5 ? r1 - 0.5 : r1 + 0.5;
         pair<double, int> val1 = make_pair(r1, -1);
         pair<double, int> val2 = make_pair(r2, -1);
+        // upperbound help return the first element bigger than a input val, if element is a pair, default to compare the first element of the pair
         c1 = (*upper_bound(Prob[i].begin(),
                            Prob[i].end(), val1))
                  .second;

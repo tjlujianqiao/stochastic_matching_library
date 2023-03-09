@@ -194,7 +194,9 @@ void work_from_file(string name)
     for (int i = 1; i <= numGraph; i++)
     {
         cout << " " << i;
-        graph g = generate_from_file(name, false, 100);
+        // graph g = generate_from_file(name, false, 100);
+        graph g = generate_from_exact_file(name);
+        g.print( );
 
         // Preprocessing
         int realSize = g.online_size();
@@ -202,8 +204,8 @@ void work_from_file(string name)
         map<pair<int, int>, double> typeProb  = g.optimal_matching_prob(numSample, realSize);
 
         // Extremely slow to compute natural LP
-        // natural_lp lp(g.get_adj(),g.online_size());
-        // map<pair<int, int>, double> SWRProb = lp.solve_lp();
+        natural_lp lp(g.get_adj(),g.online_size());
+        map<pair<int, int>, double> SWRProb = lp.solve_lp();
         
         //vector<double> offMass = g.poisson_offline_mass(SWRProb);
         vector<double> offMass = g.poisson_offline_mass(typeProb);
@@ -218,15 +220,15 @@ void work_from_file(string name)
         
         vector<vector<int>> jlList = g.jaillet_lu_list();
         
-        map<pair<int, int>, double> brubachLp = g.brubach_et_al_lp();
-        vector<vector<pair<int, double>>> brubachSSXH = g.brubach_et_al_h(brubachLp);
+        // map<pair<int, int>, double> brubachLp = g.brubach_et_al_lp();
+        // vector<vector<pair<int, double>>> brubachSSXH = g.brubach_et_al_h(brubachLp);
 
         for (int j = 0; j < numSample; j++)
         {
             g.realize(realSize);
 
             OPT.add_run(match_size(g.maximum_matching()));
-            //SWR.add_run(match_size(g.sampling_without_replacement(SWRProb)));
+            SWR.add_run(match_size(g.sampling_without_replacement(SWRProb)));
             SWRType.add_run(match_size(g.sampling_without_replacement(typeProb)));
             ranking.add_run(match_size(g.ranking()));
             balanceSWR.add_run(match_size(g.balance_swr()));
@@ -241,7 +243,7 @@ void work_from_file(string name)
             BahmaniKapralov.add_run(match_size(g.bahmani_kapralov(blueB, redB)));
             manshadiGS.add_run(match_size(g.manshadi_et_al(typeProb)));
             jailletLu.add_run(match_size(g.jaillet_lu(jlList)));
-            brubachSSX.add_run(match_size(g.brubach_et_al(brubachSSXH)));
+            // brubachSSX.add_run(match_size(g.brubach_et_al(brubachSSXH)));
         }
 
         double opt = compute_mean_std(OPT.resRun).first;
@@ -282,13 +284,13 @@ void work_from_erdos_renyi(int n, double c)
     double p = c / n;
     cout << "Working on Erdos " << n << " " << n << " " << c << endl;
 
-    int numGraph = 10;
-    int numSample = 1000;
+    int numGraph = 1000;
+    int numSample = 100;
 
     cout << "Rep";
     for (int i = 1; i <= numGraph; i++)
     {
-        cout << " " << i;
+        cerr << " " << i;
         graph g = bipartite_erdos_renyi(n, n, p);
 
         // Preprocessing
@@ -312,8 +314,8 @@ void work_from_erdos_renyi(int n, double c)
         
         vector<vector<int>> jlList = g.jaillet_lu_list();
         
-        map<pair<int, int>, double> brubachLp = g.brubach_et_al_lp();
-        vector<vector<pair<int, double>>> brubachSSXH = g.brubach_et_al_h(brubachLp);
+        // map<pair<int, int>, double> brubachLp = g.brubach_et_al_lp();
+        // vector<vector<pair<int, double>>> brubachSSXH = g.brubach_et_al_h(brubachLp);
 
         for (int j = 0; j < numSample; j++)
         {
@@ -333,7 +335,7 @@ void work_from_erdos_renyi(int n, double c)
             BahmaniKapralov.add_run(match_size(g.bahmani_kapralov(blueB, redB)));
             manshadiGS.add_run(match_size(g.manshadi_et_al(typeProb)));
             jailletLu.add_run(match_size(g.jaillet_lu(jlList)));
-            brubachSSX.add_run(match_size(g.brubach_et_al(brubachSSXH)));
+            // brubachSSX.add_run(match_size(g.brubach_et_al(brubachSSXH)));
         }
 
         double opt = compute_mean_std(OPT.resRun).first;
@@ -350,9 +352,8 @@ void work_from_erdos_renyi(int n, double c)
 
 int main()
 {
-    for (double c = 0.1; c < 2; c += 0.2)
+    for (double c = 1; c < 2; c += 20)
     {
-        
         work_from_erdos_renyi(50, c);
         datasetName.push_back("c=" + to_string(c));
     }
@@ -372,6 +373,7 @@ int main()
         work_from_file(item.first);
         datasetName.push_back(item.second);
     }*/
+    // work_from_file("nan_example.txt");
 
     
     save_results_to_files("real_world_result");
