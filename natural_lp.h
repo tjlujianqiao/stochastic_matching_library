@@ -47,7 +47,7 @@ public:
 
             for (int i = 0; i < onSize; i++)
                 for (int j : adjLP[i])
-                    typeProb[make_pair(i, j)] = 1;
+                    typeProb[make_pair(i, j)] = 1 - exp(-1.0);
             return typeProb;
         }
         // Initial point (0, 0, ..., 0) is feasible
