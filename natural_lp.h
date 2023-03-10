@@ -7,8 +7,8 @@ class natural_lp
 private:
     map<pair<int, int>, int> eID;
     vector<vector<int>> adjLP;
-    const double eps = 1e-1;
-    const double eps1 = 1e-3;
+    const double eps_obj = 1e-1;
+    const double eps_feas = 1e-3;
     double f_best = 0;
     int onSize, n;
     double *x;
@@ -124,7 +124,7 @@ public:
                 sum += x[id];
             }
 
-            if (sum > eps1)
+            if (sum > eps_feas)
             {
                 for (int j : adjLP[i])
                 {
@@ -160,7 +160,7 @@ public:
                 sum_l += lambda[x_j[s].second];
                 sum_x += x_j[s].first;
                 sum = sum_x + exp(-sum_l) - 1;
-                if (sum > eps1)
+                if (sum > eps_feas)
                 {
                     for (int e = 0; e <= s; e++)
                     {
@@ -186,7 +186,7 @@ public:
             {
                 int id = eID[make_pair(i, j)];
                 sum = -x[id];
-                if (sum > eps1)
+                if (sum > eps_feas)
                 {
                     g_k[id] = -1;
                     stop_value = cal_stop_value();
@@ -204,9 +204,7 @@ public:
         stop_value = cal_stop_value();
         sum = get_obj();
         update_ellipsoid(sum, stop_value, false);
-        // printf("sum%f stop_value%f \n", sum, stop_value );
-        // assert(stop_value > -1e-10);
-        if (stop_value <= eps)
+        if (stop_value <= eps_obj)
         {
             return true;
         }
@@ -221,9 +219,6 @@ public:
             for (int j = 1; j < n + 1; j++)
                 stop_value += P[i][j] * g_k[i] * g_k[j];
         
-        if(stop_value < -1e-10) savetofile();
-        assert(stop_value > -1e-10);
-        // cout << stop_value << endl;
         return sqrt(stop_value);
     }
 
@@ -259,15 +254,11 @@ public:
             f_best = min(f_best, get_obj());
             alpha = 1.0 * (sum - f_best) / stop_value;
         }
-        
-
-        
 
         double term1[n + 1];
         fill(term1, term1 + n + 1, 0.0);
         double term2[n + 1];
         fill(term2, term2 + n + 1, 0.0);
-        double term3[n + 1][n + 1];
 
         for (int i = 1; i < n + 1; i++)
             for (int j = 1; j < n + 1; j++)
@@ -275,11 +266,6 @@ public:
                 term1[i] += P[i][j] * g_n[j];
                 term2[i] += g_n[j] * P[j][i];
             }
-
-        for (int i = 1; i < n + 1; i++)
-            for (int j = 1; j < n + 1; j++)
-                term3[i][j] = term1[i] * term2[j];
-
         for (int i = 1; i < n + 1; i++)
         {
             x[i] -= (1.0 + n * alpha) / (n + 1) * term1[i];
@@ -287,11 +273,8 @@ public:
             {
                 P[i][j] = 1.0 * n * n / (n * n - 1) *
                           (1 - alpha * alpha) *
-                          (P[i][j] - 2.0 * (1 + n * alpha) / ((n + 1) * (1 + alpha)) * term3[i][j]);
+                          (P[i][j] - 2.0 * (1 + n * alpha) / ((n + 1) * (1 + alpha)) * term1[i] * term2[j]);
             }
         }
-        // double ss = cal_stop_value();
-        // printf("sum %f, fbest %f ,alpha : %f, stop vale : %f , flag:%d\n", sum, f_best,alpha,ss , flag);
-        // assert(ss > -1e-10);
     }
 };
