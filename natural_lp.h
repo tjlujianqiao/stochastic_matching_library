@@ -40,6 +40,16 @@ public:
 
     map<pair<int, int>, double> solve_lp()
     {
+
+        map<pair<int, int>, double> typeProb;
+        if (n == 1)
+        {
+
+            for (int i = 0; i < onSize; i++)
+                for (int j : adjLP[i])
+                    typeProb[make_pair(i, j)] = 1;
+            return typeProb;
+        }
         // Initial point (0, 0, ..., 0) is feasible
         P = (double **)malloc(sizeof(double *) * (n + 1));
         g_k = (double *)malloc(sizeof(double) * (n + 1));
@@ -67,7 +77,6 @@ public:
         while (not iterate_ellipsoid())
             ;
 
-        map<pair<int, int>, double> typeProb;
         for (int i = 0; i < onSize; i++)
             for (int j : adjLP[i])
                 typeProb[make_pair(i, j)] = x[eID[make_pair(i, j)]];
@@ -201,7 +210,7 @@ public:
         for (int i = 1; i < n + 1; i++)
             for (int j = 1; j < n + 1; j++)
                 stop_value += P[i][j] * g_k[i] * g_k[j];
-        
+
         return sqrt(stop_value);
     }
 
