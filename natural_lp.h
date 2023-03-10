@@ -17,23 +17,6 @@ private:
     vector<double> lambda;
 
 public:
-    void savetofile()
-    {
-        ofstream of;
-        of.open("nan_example.txt");
-        of <<"\% lipu" << endl;
-        of << "\% " << n <<" "<< onSize << endl;
-        for (int i = 0; i < onSize; i++)
-        {
-            for (int j : adjLP[i])
-            {
-                of << i << " " << j  << " " << -1 << endl; 
-            }
-        }
-        of.close();
-        return ;
-        
-    }
     // Initialize
     natural_lp(const vector<vector<int>> &adj, int onsize)
     {
