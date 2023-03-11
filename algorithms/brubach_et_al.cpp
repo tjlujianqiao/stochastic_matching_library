@@ -68,7 +68,6 @@ map<pair<int, int>, double> graph::brubach_et_al_lp()
             res[make_pair(i, j)] = glp_get_col_prim(lp, eID[i][j]);
 
     glp_delete_prob(lp);
-    glp_free_env();
     return res;
 }
 
