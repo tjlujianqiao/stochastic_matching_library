@@ -3,10 +3,10 @@
 map<pair<int, int>, double> graph::brubach_et_al_lp()
 {
     vector<int> ia, ja;
-    vector<double> ea;
+    vector<double> ar;
     vector<map<int, int>> eID(onSize);
 
-    ia.push_back(-1); ja.push_back(-1); ea.push_back(-1.0);
+    ia.push_back(-1); ja.push_back(-1); ar.push_back(-1.0);
 
     glp_prob *lp = glp_create_prob();
     glp_set_obj_dir(lp, GLP_MAX);
@@ -30,11 +30,11 @@ map<pair<int, int>, double> graph::brubach_et_al_lp()
             
             ia.push_back(i + 1);
             ja.push_back(num);
-            ea.push_back(1.0);
+            ar.push_back(1.0);
 
             ia.push_back(j + 1);
             ja.push_back(num);
-            ea.push_back(1.0);
+            ar.push_back(1.0);
             
             glp_set_col_bnds(lp, num, GLP_DB, 0.0, 1.0 - exp(-1.0));
             glp_set_obj_coef(lp, num, 1.0);
@@ -50,14 +50,14 @@ map<pair<int, int>, double> graph::brubach_et_al_lp()
                 
                 ia.push_back(nRow);
                 ja.push_back(eID[i1][j]);
-                ea.push_back(1.0);
+                ar.push_back(1.0);
 
                 ia.push_back(nRow);
                 ja.push_back(eID[i2][j]);
-                ea.push_back(1.0);
+                ar.push_back(1.0);
             }
 
-    glp_load_matrix(lp, (int)ia.size() - 1, &ia[0], &ja[0], &ea[0]);
+    glp_load_matrix(lp, (int)ia.size() - 1, &ia[0], &ja[0], &ar[0]);
 
     glp_simplex(lp, NULL);
 
