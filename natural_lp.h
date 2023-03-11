@@ -7,8 +7,8 @@ class natural_lp
 private:
     map<pair<int, int>, int> eID;
     vector<vector<int>> adjLP;
-    const double eps_obj = 1e-6;
-    const double eps_feas = 1e-6;
+    const double eps_obj = 1e-3;
+    const double eps_feas = 1e-3;
     double f_best = 0;
     int onSize, n;
     double *x;
