@@ -1,75 +1,61 @@
 // Compute LP in Brubach et al. (2016)
-// Reference: Borodin et al. , An Experimental Study of Algorithms for Online Bipartite Matching. (2019)
 
 map<pair<int, int>, double> graph::brubach_et_al_lp()
 {
     vector<int> ia, ja;
     vector<double> ea;
-    map<pair<int, int>, int> varnames;
-    vector<pair<int, int> > vars;
+    vector<map<int, int>> eID(onSize);
 
     ia.push_back(-1); ja.push_back(-1); ea.push_back(-1.0);
-    vars.push_back(make_pair(-1, -1));
 
     glp_prob *lp = glp_create_prob();
     glp_set_obj_dir(lp, GLP_MAX);
-
     glp_term_out(GLP_OFF);
 
-    int nrows = onSize + offSize;
-    glp_add_rows(lp, nrows);
-    for (int i = 0; i < nrows; i++)
-        glp_set_row_bnds(lp, i + 1, GLP_UP, 0.0, 1.0);
+    int nRow = onSize + offSize;
+    glp_add_rows(lp, nRow);
+    for (int i = 1; i <= nRow; i++)
+        glp_set_row_bnds(lp, i, GLP_UP, 0.0, 1.0);
 
-    int ncols = 0;
     for (int i = 0; i < onSize; i++)
-        ncols += (int)adj[i].size();
+        if (adj[i].size())
+            glp_add_cols(lp, adj[i].size());
     
-    
-    glp_add_cols(lp, ncols);
-    for (int i = 0; i < ncols; i++) {
-        glp_set_col_bnds(lp, i + 1, GLP_DB, 0.0, 1.0 - 1.0 / exp(1.0));
-        glp_set_obj_coef(lp, i + 1, 1.0);
-    }
-
-    int var = 1;
-    for (int i = 0; i < onSize; i++) {
-        for (int j = 0; j < (int)adj[i].size(); j++) {
+    int num = 0;
+    for (int i = 0; i < onSize; i++)
+        for (int j : adj[i])
+        {
+            num++;
+            eID[i][j] = num;
+            
             ia.push_back(i + 1);
-            ja.push_back(var);
+            ja.push_back(num);
             ea.push_back(1.0);
 
-            ia.push_back(adj[i][j] + 1);
-            ja.push_back(var);
+            ia.push_back(j + 1);
+            ja.push_back(num);
             ea.push_back(1.0);
-
-            varnames[make_pair(i, adj[i][j])] = var;
-            vars.push_back(make_pair(i, adj[i][j]));
-            var++;
+            
+            glp_set_col_bnds(lp, num, GLP_DB, 0.0, 1.0 - exp(-1.0));
+            glp_set_obj_coef(lp, num, 1.0);
         }
-    }
 
-    int currow = nrows;
-    for (int j = onSize; j < (int)onSize + offSize; j++) {
-        for (int i1 = 0; i1 < (int)adj[j].size(); i1++) {
-            for (int i2 = i1 + 1; i2 < (int)adj[j].size(); i2++) {
-                pair<int, int> e1 = make_pair(adj[j][i1], j);
-                pair<int, int> e2 = make_pair(adj[j][i2], j);
+    for (int j = onSize; j < onSize + offSize; j++)
+        for (int i1 : adj[j]) for (int i2 : adj[j])
+            if (i1 < i2)
+            {
+                nRow++;
                 glp_add_rows(lp, 1);
-                currow++;
-                glp_set_row_bnds(lp, currow, GLP_UP, 0.0, 1.0 - 1.0 / 
-                    (exp(1.0)*exp(1.0)));
+                glp_set_row_bnds(lp, nRow, GLP_UP, 0.0, 1.0 - exp(-2.0));
                 
-                ia.push_back(currow);
-                ja.push_back(varnames[e1]);
+                ia.push_back(nRow);
+                ja.push_back(eID[i1][j]);
                 ea.push_back(1.0);
 
-                ia.push_back(currow);
-                ja.push_back(varnames[e2]);
+                ia.push_back(nRow);
+                ja.push_back(eID[i2][j]);
                 ea.push_back(1.0);
             }
-        }
-    }
 
     glp_load_matrix(lp, (int)ia.size() - 1, &ia[0], &ja[0], &ea[0]);
 
@@ -77,10 +63,9 @@ map<pair<int, int>, double> graph::brubach_et_al_lp()
 
     map<pair<int, int>, double> res;
 
-    for (int i = 1; i <= ncols; i++) {
-        double val = glp_get_col_prim(lp, i);
-        res[vars[i]] = val;
-    }
+    for (int i = 0; i < onSize; i++)
+        for (int j : adj[i])
+            res[make_pair(i, j)] = glp_get_col_prim(lp, eID[i][j]);
 
     glp_delete_prob(lp);
     glp_free_env();
@@ -218,7 +203,6 @@ vector<int> graph::brubach_et_al(vector<vector<pair<int, double>>> h)
         {
             int v1 = hI[0].first, v2 = hI[1].first;
             double x1 = hI[0].second, x2 = hI[1].second;
-            
             
             uniform_real_distribution<double> curRand(0.0, x1 + x2);
             if (curRand(rng) <= x1)
