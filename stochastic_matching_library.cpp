@@ -161,13 +161,13 @@ void save_results_to_files(string directory)
     for (auto i : resPointer)
         if (i != &OPT)
         {
-            fileResMean << (*i).name << " ";
-            fileResStd << (*i).name << " ";
+            fileResMean << (*i).name;
+            fileResStd << (*i).name;
             
             for (auto j : (*i). resDataset)
             {
-                fileResMean << j.first  << " ";
-                fileResStd << j.second << " ";
+                fileResMean << " " << j.first;
+                fileResStd << " " << j.second;
             }
             
             fileResMean << endl;
