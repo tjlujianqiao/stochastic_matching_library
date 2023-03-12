@@ -7,14 +7,15 @@ class natural_lp
 private:
     map<pair<int, int>, int> eID;
     vector<vector<int>> adjLP;
-    const double eps_obj = 1e-3;
-    const double eps_feas = 1e-3;
+    const double eps_obj = 1e-1;
+    const double eps_feas = 1e-6;
     double f_best = 0;
     int onSize, n;
     double *x;
     double *g_k;
     double **P;
-    vector<double> lambda;
+    double *lambda;
+    int iter_num  =0 ;
 
 public:
     // Initialize
@@ -44,16 +45,17 @@ public:
         map<pair<int, int>, double> typeProb;
         if (n == 1)
         {
-
             for (int i = 0; i < onSize; i++)
                 for (int j : adjLP[i])
-                    typeProb[make_pair(i, j)] = 1 - exp(-1.0);
+                    typeProb[make_pair(i, j)] = 1 - exp(-1);
             return typeProb;
         }
         // Initial point (0, 0, ..., 0) is feasible
         P = (double **)malloc(sizeof(double *) * (n + 1));
         g_k = (double *)malloc(sizeof(double) * (n + 1));
         x = (double *)malloc(sizeof(double) * (n + 1));
+        lambda = (double *)malloc(sizeof(double) * (onSize));
+        
 
         for (int i = 0; i < n + 1; i++)
         {
@@ -64,26 +66,28 @@ public:
             for (int j = 0; j < n + 1; j++)
                 P[i][j] = 0;
 
-        for (int i = 1; i <= n; i++)
+        for (int i = 1; i < n + 1; i++)
         {
             P[i][i] = 1.0 * n;
             g_k[i] = 0;
             x[i] = 0;
         }
-
-        lambda = vector<double>(onSize, 1);
+        for (int i = 0; i < onSize; i++)
+            lambda[i] = 1;
 
         f_best = get_obj();
-        while (not iterate_ellipsoid())
-            ;
+        while ( not iterate_ellipsoid() );
 
         for (int i = 0; i < onSize; i++)
             for (int j : adjLP[i])
                 typeProb[make_pair(i, j)] = x[eID[make_pair(i, j)]];
 
         free(P);
+        P = nullptr;
         free(g_k);
+        g_k = nullptr;
         free(x);
+        x =nullptr;
 
         return typeProb;
     }
@@ -104,7 +108,7 @@ public:
     {
         double stop_value, sum;
 
-        fill(g_k, g_k + n + 1, 0);
+        fill(g_k, g_k + n + 1, 0.0);
 
         for (int i = 0; i < onSize; i++)
         {
@@ -121,7 +125,7 @@ public:
                 for (int j : adjLP[i])
                 {
                     int id = eID[make_pair(i, j)];
-                    g_k[id] = 1;
+                    g_k[id] = (double)1.0;
                 }
                 stop_value = cal_stop_value();
                 if (stop_value < sum)
@@ -151,13 +155,13 @@ public:
             {
                 sum_l += lambda[x_j[s].second];
                 sum_x += x_j[s].first;
-                sum = sum_x + exp(-sum_l) - 1;
+                sum = sum_x + expl(-sum_l) - 1;
                 if (sum > eps_feas)
                 {
                     for (int e = 0; e <= s; e++)
                     {
                         int id = eID[make_pair(x_j[s].second, j)];
-                        g_k[id] = 1;
+                        g_k[id] = (double)1.0;
                     }
                     stop_value = cal_stop_value();
 
@@ -180,7 +184,7 @@ public:
                 sum = -x[id];
                 if (sum > eps_feas)
                 {
-                    g_k[id] = -1;
+                    g_k[id] = (double) -1.0;
                     stop_value = cal_stop_value();
                     if (stop_value < sum)
                     {
@@ -191,15 +195,15 @@ public:
                 }
             }
         }
-        // not all to 1, since some edge do not exist and the weight is 0, set this based on adj matrix
-        fill(g_k, g_k + n + 1, -1);
+
+        for (int i = 0; i < n + 1; i++) g_k[i] = (double) -1.0;
         stop_value = cal_stop_value();
-        sum = get_obj();
-        update_ellipsoid(sum, stop_value, false);
         if (stop_value <= eps_obj)
         {
             return true;
         }
+        sum = get_obj();
+        update_ellipsoid(sum, stop_value, false);
         return false;
     }
 
@@ -218,7 +222,7 @@ public:
     double get_obj()
     {
         double fv = 0;
-        for (int i = 1; i <= n; i++)
+        for (int i = 1; i < n + 1; i++)
             fv -= x[i];
         return fv;
     }
@@ -248,9 +252,10 @@ public:
         }
 
         double term1[n + 1];
-        fill(term1, term1 + n + 1, 0.0);
         double term2[n + 1];
-        fill(term2, term2 + n + 1, 0.0);
+        for (int i = 1; i < n +1 ; i++)
+        term1[i] = term2[i] = 0;
+        
 
         for (int i = 1; i < n + 1; i++)
             for (int j = 1; j < n + 1; j++)
@@ -260,13 +265,15 @@ public:
             }
         for (int i = 1; i < n + 1; i++)
         {
-            x[i] -= (1.0 + n * alpha) / (n + 1) * term1[i];
+            x[i] -= (double)(1.0 + n * alpha) / (n + 1) * term1[i];
             for (int j = 1; j < n + 1; j++)
             {
-                P[i][j] = 1.0 * n * n / (n * n - 1) *
-                          (1 - alpha * alpha) *
-                          (P[i][j] - 2.0 * (1 + n * alpha) / ((n + 1) * (1 + alpha)) * term1[i] * term2[j]);
+                P[i][j] = 1.0 * n * n *(1.0 - alpha * alpha) / (n * n - 1) *
+                          (P[i][j] - 2.0 * (1.0 + n * alpha) / ((n + 1) * (1 + alpha)) * term1[i] * term2[j]);
             }
         }
+        assert(alpha >-1e-6);
+        // printf("%f\n", alpha);
+        
     }
 };
