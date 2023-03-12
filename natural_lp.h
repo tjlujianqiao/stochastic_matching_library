@@ -7,15 +7,14 @@ class natural_lp
 private:
     map<pair<int, int>, int> eID;
     vector<vector<int>> adjLP;
-    const double eps_obj = 1e-1;
-    const double eps_feas = 1e-6;
+    const double eps_obj = 1e-3;
+    const double eps_feas = 1e-3;
     double f_best = 0;
     int onSize, n;
     double *x;
     double *g_k;
     double **P;
     double *lambda;
-    int iter_num  =0 ;
 
 public:
     // Initialize
@@ -68,14 +67,14 @@ public:
 
         for (int i = 1; i < n + 1; i++)
         {
-            P[i][i] = 1.0 * n;
+            P[i][i] = n / 4.0;
             g_k[i] = 0;
-            x[i] = 0;
+            x[i] = 0.5;
         }
         for (int i = 0; i < onSize; i++)
             lambda[i] = 1;
 
-        f_best = get_obj();
+        f_best = 0;
         while ( not iterate_ellipsoid() );
 
         for (int i = 0; i < onSize; i++)
@@ -87,7 +86,7 @@ public:
         free(g_k);
         g_k = nullptr;
         free(x);
-        x =nullptr;
+        x = nullptr;
 
         return typeProb;
     }
@@ -247,7 +246,7 @@ public:
         }
         else
         {
-            f_best = min(f_best, get_obj());
+            f_best = min(f_best, sum);
             alpha = 1.0 * (sum - f_best) / stop_value;
         }
 
@@ -261,7 +260,7 @@ public:
             for (int j = 1; j < n + 1; j++)
             {
                 term1[i] += P[i][j] * g_n[j];
-                term2[i] += g_n[j] * P[j][i];
+                term2[j] += g_n[i] * P[i][j];
             }
         for (int i = 1; i < n + 1; i++)
         {
@@ -272,8 +271,6 @@ public:
                           (P[i][j] - 2.0 * (1.0 + n * alpha) / ((n + 1) * (1 + alpha)) * term1[i] * term2[j]);
             }
         }
-        assert(alpha >-1e-6);
-        // printf("%f\n", alpha);
         
     }
 };
