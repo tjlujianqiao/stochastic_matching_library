@@ -1,0 +1,13 @@
+Algorithm moreno_highschool
+SWR 0.912161 
+PoissonOCS 0.902912 
+MinDegree 0.923309 
+BalanceSWR 0.907201 
+BalanceOCS 0.905106 
+Ranking 0.903403 
+TopHalfSampling 0.771661 
+BrubachEtAl nan 
+JailletLu 0.793711 
+ManshadiEtAl 0.786132 
+BahmaniKapralov 0.784053 
+FeldManEtAl 0.773642 

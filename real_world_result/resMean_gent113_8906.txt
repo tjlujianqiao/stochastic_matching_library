@@ -1,0 +1,13 @@
+Algorithm gent113
+SWR 0.890657 
+PoissonOCS 0.887468 
+MinDegree 0.901677 
+BalanceSWR 0.909454 
+BalanceOCS 0.906104 
+Ranking 0.901965 
+TopHalfSampling 0.510156 
+BrubachEtAl nan 
+JailletLu 0.838344 
+ManshadiEtAl 0.83014 
+BahmaniKapralov 0.792814 
+FeldManEtAl 0.782328 

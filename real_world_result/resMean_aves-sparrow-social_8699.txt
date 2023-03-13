@@ -1,0 +1,13 @@
+Algorithm aves-sparrow-social
+SWR 0.869908 
+PoissonOCS 0.8638 
+MinDegree 0.916463 
+BalanceSWR 0.897269 
+BalanceOCS 0.893125 
+Ranking 0.885903 
+TopHalfSampling 0.676975 
+BrubachEtAl nan 
+JailletLu 0.821874 
+ManshadiEtAl 0.81567 
+BahmaniKapralov 0.799457 
+FeldManEtAl 0.778397 
