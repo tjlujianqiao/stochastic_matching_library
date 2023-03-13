@@ -86,7 +86,7 @@ map<pair<int, int>, double> graph::jaillet_lu_non_integral()
             if (e.flow > 0)
             {
                 int j = (e.v < onSize + offSize) ? e.v : e.v - offSize;
-                jlProb[make_pair(i, e.v)] += (double)e.flow / mul;
+                jlProb[make_pair(i, j)] += (double)e.flow / mul;
             }
 
     return jlProb;

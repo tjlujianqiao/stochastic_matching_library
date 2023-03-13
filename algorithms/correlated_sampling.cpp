@@ -50,7 +50,7 @@ vector<int> graph::correlated_sampling(map<pair<int, int>, double> &typeProb)
         c1 = (*upper_bound(Prob[i].begin(),
                            Prob[i].end(), val1))
                  .second;
-        if (c1 != jStar)
+        if (c1 != jStar || jStar == -1)
         {
             c2 = (*upper_bound(Prob[i].begin(),
                                Prob[i].end(), val2))
@@ -58,15 +58,13 @@ vector<int> graph::correlated_sampling(map<pair<int, int>, double> &typeProb)
         }
         else
         {
-            double massJStar = typeProb[make_pair(types[i], jStar)], totalMass = 0.0;
+            double massJStar = typeProb[make_pair(types[i], jStar)];
             vector<pair<double, int>> Prob2;
             for (auto j : adj[types[i]])
             {
                 mass = typeProb[make_pair(types[i], j)];
                 if (mass < 0.5 - 1e-10)
-                {
                     Prob2.push_back(make_pair(mass / (1.0 - massJStar), j));
-                }
             }
             double rr = rand_sample(rng), sum = 0;
             for (auto item : Prob2)
