@@ -1,2 +1,2 @@
-#An open library for stochastic matching algorithms
+# An open library for stochastic matching algorithms
                 
