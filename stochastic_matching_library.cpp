@@ -113,7 +113,8 @@ struct resAlg
     balanceOCS("BalanceOCS"),
     minDegree("MinDegree"),
     feldmanMMM("FeldManEtAl"),
-    BahmaniKapralov("BahmaniKapralov"),
+    bahmaniKapralov("BahmaniKapralov"),
+    heaupler("HeauplerEtAl"),
     manshadiGS("ManshadiEtAl"),
     jailletLu("JailletLu"),
     jailletLuNonInt("JailletLuNonInt"),
@@ -132,13 +133,14 @@ vector<resAlg*> resPointer = {
     &balanceSWR,
     &balanceOCS,
     &ranking,
+    &heaupler,
     &topHalf,
     &brubachSSX,
     &jailletLu,
     &correlated,
     &manshadiGS,
     &jailletLuNonInt,
-    &BahmaniKapralov,
+    &bahmaniKapralov,
     &feldmanMMM
 };
 
@@ -218,6 +220,10 @@ void run_on_graph(graph &g, int numSample, bool useNatural = false)
     
     map<pair<int, int>, double> brubachLp = g.brubach_et_al_lp();
     vector<vector<pair<int, double>>> brubachSSXH = g.brubach_et_al_h(brubachLp);
+    
+    vector<int> heauplerM1, heauplerM2;
+    vector<pair<int, int>> heauplerM3;
+    tie(heauplerM1, heauplerM2, heauplerM3) = g.haeupler_et_al_advice(brubachLp);
 
     for (int i = 0; i < numSample; i++)
     {
@@ -246,7 +252,8 @@ void run_on_graph(graph &g, int numSample, bool useNatural = false)
         minDegree.add_run(match_size(g.min_degree()));
         
         feldmanMMM.add_run(match_size(g.feldman_et_al(blueF, redF)));
-        BahmaniKapralov.add_run(match_size(g.bahmani_kapralov(blueB, redB)));
+        bahmaniKapralov.add_run(match_size(g.bahmani_kapralov(blueB, redB)));
+        heaupler.add_run(match_size(g.haeupler_et_al(heauplerM1, heauplerM2, heauplerM3)));
         manshadiGS.add_run(match_size(g.manshadi_et_al(typeProb)));
         jailletLu.add_run(match_size(g.jaillet_lu(jlList)));
         jailletLuNonInt.add_run(match_size(g.manshadi_et_al(jlProb)));

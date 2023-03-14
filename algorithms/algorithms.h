@@ -5,6 +5,7 @@
 #include "brubach_et_al.cpp"
 #include "correlated_sampling.cpp"
 #include "feldman_et_al.cpp"
+#include "haeupler_et_al.cpp"
 #include "jaillet_lu.cpp"
 #include "manshadi_et_al.cpp"
 #include "maximum_matching.cpp"

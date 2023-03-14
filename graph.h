@@ -97,6 +97,10 @@ public:
     
     vector<int> manshadi_et_al(map<pair<int, int>, double> &typeProb);
     
+    tuple<vector<int>, vector<int>, vector<pair<int, int>>> haeupler_et_al_advice(map<pair<int, int>, double> lpPseudo);
+    vector<int> haeupler_et_al(const vector<int> &M1, const vector<int> &M2, const vector<pair<int, int>> &M3);
+
+    
     pair<vector<int>, vector<int>> bahmani_kapralov_color();
     vector<int> bahmani_kapralov(vector<int> &blue, vector<int> &red);
     
